@@ -1,0 +1,12 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+def dep = rootProject.ext
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "$dep.kotlin.stdlib"
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"

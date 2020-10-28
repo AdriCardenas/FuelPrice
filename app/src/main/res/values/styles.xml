@@ -1,0 +1,64 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowBackground">@color/backgroundAppColor</item>
+        <item name="android:colorEdgeEffect">@color/transparent</item>
+    </style>
+
+    <style name="AppTheme.Launcher" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+        <item name="android:statusBarColor">@color/backgroundSplashColor</item>
+    </style>
+
+
+    <style name="Font" />
+
+    <style name="Font.Header">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="Font.Header.Small">
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
+
+    <style name="Font.Header.Regular">
+        <item name="android:textSize">@dimen/regular_text_size</item>
+    </style>
+
+    <style name="Font.Header.Big">
+        <item name="android:textSize">@dimen/big_text_size</item>
+    </style>
+
+    <style name="Font.Header.Title">
+        <item name="android:textSize">@dimen/title_text_size</item>
+    </style>
+
+    <style name="Font.Body">
+        <item name="fontFamily">sans-serif</item>
+    </style>
+
+    <style name="Font.Body.Small">
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
+
+    <style name="Font.Body.Regular">
+        <item name="android:textSize">@dimen/regular_text_size</item>
+    </style>
+
+    <style name="Font.Body.Big">
+        <item name="android:textSize">@dimen/big_text_size</item>
+    </style>
+
+    <style name="Font.Body.Title">
+        <item name="android:textSize">@dimen/title_text_size</item>
+    </style>
+
+
+</resources>

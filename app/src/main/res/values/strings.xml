@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Precio gasolina</string>
+
+    <string name="dark_mode">Modo oscuro</string>
+    <string name="theme_dark">Tema oscuro</string>
+    <string name="theme_light">Tema light</string>
+    <string name="theme_follow">Seguir tema del dispositivo</string>
+    <string name="select_theme">Seleccionar tema de la aplicación</string>
+
+    <string name="pref_dark_mode" translatable="false">pref_dark_mode</string>
+    <string name="pref_first_start" translatable="false">pref_first_start</string>
+<!--    <string name="add_unit">ca-app-pub-3940256099942544/6300978111</string>-->
+    <string name="add_unit">ca-app-pub-5616912530270062/3131587924</string>
+    <string name="select_your_preferred_fuel">Selecciona tu combustible preferido, más adelante podrás modificarlo</string>
+    <string name="location_access_required">Se necesita el acceso a la ubicación de su dispositivo para optimizar las funciones de la app</string>
+    <string name="ok">Ok</string>
+    <string name="location_permission_denied">No podremos utilizar los resultados de las gasolineras más cercanas</string>
+    <string name="your_app_for_fuel_control">Tu app para el control de los gastos de combustible</string>
+    <string name="next">Siguiente</string>
+    <string name="start">Empezar</string>
+
+
+
+    <string name="onboarding_secure_description">Mantenemos los datos en su dispositivo sin usar ningún tipo de nube. La seguridad es lo primero</string>
+    <string name="onboarding_secure_title">Datos seguros</string>
+    <string name="onboarding_fuel_description">Encuentra tu combustible perfecto y más cercano de la manera más sencilla</string>
+    <string name="onboarding_fuel_title">Consigue el combustible más barato</string>
+    <string name="onboarding_cost_description">Accede y administra rápidamente los datos de su consumo</string>
+    <string name="onboarding_cost_title">Organiza tus gastos</string>
+    <string name="go_back">Go Back</string>
+    <string name="use_location_for_best_results">Utiliza la geolocalización de tu dispositivo para mejores resultados</string>
+    <string name="also_change_your_location">Tambien podras usar la app utilizando la ubicación de manera manual y podrás modificarla más adelante</string>
+    <string name="auto_location">Obtener ubicación automática</string>
+    <string name="or">ó</string>
+    <string name="manual_location">Ubicación manual</string>
+    <string name="fill_your_location">Rellena tu ubicación</string>
+    <string name="skip">Saltar</string>
+</resources>

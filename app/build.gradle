@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+def dep = rootProject.ext
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.adca.fuelprice"
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(path: "$dep.modules.domain")
+    implementation project(path: "$dep.modules.presentation")
+    implementation project(path: "$dep.modules.data")
+
+    implementation "$dep.android.constraintlayout"
+    implementation "$dep.android.appcompat"
+    implementation "$dep.android.recyclerView"
+    implementation "$dep.android.preferenceKtx"
+    implementation "$dep.android.material"
+
+    implementation 'com.google.android.gms:play-services-ads:19.4.0'
+    implementation "com.google.android.gms:play-services-location:17.1.0"
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+
+    implementation 'com.karumi:dexter:6.2.1'
+
+    implementation "$dep.kotlin.stdlib"
+    implementation "$dep.kotlin.ktx"
+
+    implementation "$dep.koin.core"
+    implementation "$dep.koin.viewmodel"
+
+    implementation "$dep.coroutines.core"
+    implementation "$dep.coroutines.android"
+
+    implementation "$dep.network.converter"
+    implementation "$dep.okhttp.interceptor"
+
+    implementation "$dep.multidex.core"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"

@@ -1,0 +1,17 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+def dep = rootProject.ext
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(path: "$dep.modules.domain")
+
+    implementation "$dep.kotlin.stdlib"
+
+    implementation "$dep.network.retrofit"
+    implementation "$dep.network.gson"
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
