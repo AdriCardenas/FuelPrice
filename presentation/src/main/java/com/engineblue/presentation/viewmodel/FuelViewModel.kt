@@ -15,6 +15,9 @@ class FuelViewModel
 ) :
     ViewModel(), ViewModelScope by scope {
 
+    private val filteredListFuelForCars =
+        listOf("1", "23", "20", "3", "21", "4", "5", "6", "7", "17", "18")
+
     val fuelProductList =
         MutableLiveData<List<FuelProductDisplayModel>>()
 
@@ -28,13 +31,13 @@ class FuelViewModel
                             it.name,
                             it.nameAbbreviature
                         )
-                    }.toList()
+                    }.toList().filter { filteredListFuelForCars.contains(it.id) }
                 )
             }
         }
     }
 
-    fun saveProduct(id:String, name:String){
+    fun saveProduct(id: String, name: String) {
         saveProductSelected.saveProductSelected(id, name)
     }
 

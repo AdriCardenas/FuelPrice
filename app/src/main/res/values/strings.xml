@@ -35,4 +35,5 @@
     <string name="manual_location">Ubicación manual</string>
     <string name="fill_your_location">Rellena tu ubicación</string>
     <string name="skip">Saltar</string>
+    <string name="user_experience_configuration">La ubicación se utilizará para obtener la mejor experiencia del usuario</string>
 </resources>

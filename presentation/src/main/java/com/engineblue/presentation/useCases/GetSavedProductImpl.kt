@@ -1,4 +1,4 @@
-package com.engineblue.presentation.useCases.preferences
+package com.engineblue.presentation.useCases
 
 import com.engineblue.domain.entity.FuelEntity
 import com.engineblue.domain.repository.FuelRepository

@@ -1,4 +1,4 @@
-package com.engineblue.presentation.useCases.preferences
+package com.engineblue.presentation.useCases
 
 import com.engineblue.domain.repository.FuelRepository
 import com.engineblue.domain.useCasesContract.preferences.SaveProductSelected

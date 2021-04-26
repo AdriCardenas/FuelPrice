@@ -1,15 +1,20 @@
 package com.engineblue.fuelprice.fragment
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.MultiAutoCompleteTextView.CommaTokenizer
+import androidx.lifecycle.Observer
+import com.engineblue.fuelprice.BuildConfig
 import com.engineblue.fuelprice.R
+import com.engineblue.fuelprice.activity.MainActivity
 import com.engineblue.fuelprice.callback.SelectFuelProductListener
+import com.engineblue.fuelprice.callback.SelectLocationListener
 import com.engineblue.fuelprice.fragment.base.BaseFragment
 import com.engineblue.fuelprice.utils.showSnackbar
 import com.engineblue.fuelprice.utils.toast
@@ -24,12 +29,12 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.configure_location_option_fragment.*
 import kotlinx.android.synthetic.main.station_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import java.lang.Exception
 
 
-class ConfigurationLocationFragment : BaseFragment(), SelectFuelProductListener {
+class ConfigurationLocationFragment : BaseFragment() {
 
-    private var listener: SelectFuelProductListener? = null
+    private lateinit var adapter: ArrayAdapter<String>
+    private var selectLocationListener: SelectLocationListener? = null
     private val viewModel: LocationViewModel by sharedViewModel()
 
     companion object {
@@ -38,9 +43,20 @@ class ConfigurationLocationFragment : BaseFragment(), SelectFuelProductListener 
 
     override fun getLayoutRes(): Int = R.layout.configure_location_option_fragment
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        if (context is SelectLocationListener) {
+            selectLocationListener = context
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        button_skip.setOnClickListener {
+
+        }
 
         manualLocation.setOnClickListener {
             manualLocationField.visibility = View.VISIBLE
@@ -50,7 +66,14 @@ class ConfigurationLocationFragment : BaseFragment(), SelectFuelProductListener 
             checkLocationPermission()
         }
 
+        adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_list_item_1,
+            arrayListOf()
+        )
 
+        simpleMultiAutoCompleteTextView.setAdapter(adapter)
+        simpleMultiAutoCompleteTextView.threshold = 1
 
         simpleMultiAutoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
@@ -68,40 +91,9 @@ class ConfigurationLocationFragment : BaseFragment(), SelectFuelProductListener 
                 before: Int,
                 count: Int
             ) {
+                adapter.clear()
                 address?.let {
-                    try {
-                        val listAddress = Geocoder(requireContext()).getFromLocationName(
-                            address.toString(),
-                            3
-                        )
-
-                        val arrayList = arrayListOf<String>()
-
-                        if (!listAddress.isNullOrEmpty()) {
-                            for(item in listAddress){
-                                arrayList.add(
-                                    item.locality + ", " + item.adminArea + ", " + item.countryName
-                                )
-                            }
-                        }
-
-                        val locations = ArrayAdapter(
-                            requireContext(),
-                            android.R.layout.simple_list_item_1,
-                            arrayList
-                        )
-
-                        simpleMultiAutoCompleteTextView.setAdapter(locations)
-
-                        simpleMultiAutoCompleteTextView.threshold = 3
-                        simpleMultiAutoCompleteTextView.setTokenizer(CommaTokenizer())
-                    } catch (
-                        exception:Exception
-                    ){
-                        exception.localizedMessage?.let {
-                            context?.toast(it)
-                        }
-                    }
+                    viewModel.filterLocalities(it.toString(), Geocoder(requireContext()))
                 }
             }
 
@@ -111,12 +103,13 @@ class ConfigurationLocationFragment : BaseFragment(), SelectFuelProductListener 
 
         })
 
-//
-//        viewModel.fuelProductList.observe(viewLifecycleOwner, Observer { products ->
-//            products?.let { adapter.submitList(it) }
-//        })
-//
-//        viewModel.loadProducts()
+        viewModel.localitiesFounded.observe(viewLifecycleOwner, {
+            adapter.addAll(it)
+        })
+
+        viewModel.errorExceptionLocality.observe(viewLifecycleOwner, {
+            context?.toast(it)
+        })
     }
 
     private fun checkLocationPermission() {
@@ -127,7 +120,10 @@ class ConfigurationLocationFragment : BaseFragment(), SelectFuelProductListener 
             ).withListener(object : MultiplePermissionsListener {
                 override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                     if (report.areAllPermissionsGranted()) {
-                        context?.toast("Permisos aceptados")
+                        if (BuildConfig.DEBUG)
+                            context?.toast("Permisos aceptados")
+
+                        requestLocation()
                     } else {
                         // Permission request was denied.
                         coordinatorLayout.showSnackbar(
@@ -150,11 +146,8 @@ class ConfigurationLocationFragment : BaseFragment(), SelectFuelProductListener 
             }.check()
     }
 
-    override fun selectProduct(product: FuelProductDisplayModel) {
-//        if(product.id!=null && product.name!=null) {
-//            viewModel.saveProduct(product.id!!, product.name!!)
-//            listener?.selectProduct(product)
-//        }
+    private fun requestLocation() {
+
     }
 
 
