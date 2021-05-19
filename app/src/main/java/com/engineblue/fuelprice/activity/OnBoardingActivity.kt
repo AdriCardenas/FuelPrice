@@ -13,17 +13,20 @@ import androidx.core.view.children
 import androidx.viewpager2.widget.ViewPager2
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.onboarding.OnBoardingAdapter
+import com.engineblue.fuelprice.databinding.OnboardingActivityBinding
 import com.engineblue.presentation.entity.OnBoardingItemDisplayModel
-import kotlinx.android.synthetic.main.activity_onboarding.*
 
 
 class OnBoardingActivity : AppCompatActivity() {
+
+    private lateinit var binding: OnboardingActivityBinding
 
     private lateinit var onBoardingAdapter: OnBoardingAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_onboarding)
+        binding = OnboardingActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupOnBoardingItems()
         setupOnBoardingIndicators()
@@ -32,26 +35,28 @@ class OnBoardingActivity : AppCompatActivity() {
     }
 
     private fun setupButton() {
-        buttonOnBoardingSkipAction.setOnClickListener {
+        binding.buttonOnBoardingSkipAction.setOnClickListener {
             startActivity(Intent(this, ConfigurationActivity::class.java))
             finish()
         }
 
-        goBackButton.setOnClickListener {
-            if (onBoardingViewPager.currentItem >= 0) {
-                onBoardingViewPager.currentItem = onBoardingViewPager.currentItem - 1
+        binding.goBackButton.setOnClickListener {
+            if (binding.onBoardingViewPager.currentItem >= 0) {
+                binding.onBoardingViewPager.currentItem =
+                    binding.onBoardingViewPager.currentItem - 1
             }
 
-            buttonOnBoardingSkipAction.visibility = View.VISIBLE
+            binding.buttonOnBoardingSkipAction.visibility = View.VISIBLE
         }
 
-        buttonOnBoardingAction.setOnClickListener {
-            if (onBoardingViewPager.currentItem + 1 < onBoardingAdapter.itemCount) {
-                onBoardingViewPager.currentItem = onBoardingViewPager.currentItem + 1
+        binding.buttonOnBoardingAction.setOnClickListener {
+            if (binding.onBoardingViewPager.currentItem + 1 < onBoardingAdapter.itemCount) {
+                binding.onBoardingViewPager.currentItem =
+                    binding.onBoardingViewPager.currentItem + 1
 
-                buttonOnBoardingSkipAction.visibility = View.VISIBLE
+                binding.buttonOnBoardingSkipAction.visibility = View.VISIBLE
             } else {
-                buttonOnBoardingSkipAction.visibility = View.GONE
+                binding.buttonOnBoardingSkipAction.visibility = View.GONE
 
                 startActivity(Intent(this, ConfigurationActivity::class.java))
                 finish()
@@ -60,9 +65,9 @@ class OnBoardingActivity : AppCompatActivity() {
     }
 
     private fun setupViewPager() {
-        onBoardingViewPager.adapter = onBoardingAdapter
-        onBoardingViewPager.isUserInputEnabled = false
-        onBoardingViewPager.registerOnPageChangeCallback(object :
+        binding.onBoardingViewPager.adapter = onBoardingAdapter
+        binding.onBoardingViewPager.isUserInputEnabled = false
+        binding.onBoardingViewPager.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -74,15 +79,15 @@ class OnBoardingActivity : AppCompatActivity() {
 
     private fun updateButtonStatus(currentIndex: Int) {
         if (currentIndex == 0) {
-            goBackButton.visibility = View.GONE
+            binding.goBackButton.visibility = View.GONE
         } else {
-            goBackButton.visibility = View.VISIBLE
+            binding.goBackButton.visibility = View.VISIBLE
         }
 
         if (currentIndex == onBoardingAdapter.itemCount - 1) {
-            buttonOnBoardingAction.text = getString(R.string.start)
+            binding.buttonOnBoardingAction.text = getString(R.string.start)
         } else {
-            buttonOnBoardingAction.text = getString(R.string.next)
+            binding.buttonOnBoardingAction.text = getString(R.string.next)
         }
     }
 
@@ -116,7 +121,7 @@ class OnBoardingActivity : AppCompatActivity() {
             }
 
             image.layoutParams = layoutParams
-            layoutOnBoardingIndicators.addView(image)
+            binding.layoutOnBoardingIndicators.addView(image)
             i++
         }
     }
@@ -152,7 +157,7 @@ class OnBoardingActivity : AppCompatActivity() {
     }
 
     private fun setCurrentOnBoardingIndicator(currentIndex: Int) {
-        for ((index, value) in layoutOnBoardingIndicators.children.withIndex()) {
+        for ((index, value) in binding.layoutOnBoardingIndicators.children.withIndex()) {
             if (value is ImageView) {
                 if (index == currentIndex) {
                     val crossfader = ContextCompat.getDrawable(

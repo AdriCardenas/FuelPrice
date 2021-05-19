@@ -7,6 +7,7 @@ import com.engineblue.fuelprice.BuildConfig
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.callback.SelectFuelProductListener
 import com.engineblue.fuelprice.callback.SelectLocationListener
+import com.engineblue.fuelprice.databinding.ConfigurationActivityBinding
 import com.engineblue.fuelprice.fragment.ConfigurationLocationFragment
 import com.engineblue.fuelprice.fragment.ConfigureFuelProductOptionFragment
 import com.engineblue.fuelprice.fragment.StationListFragment
@@ -16,9 +17,12 @@ import com.engineblue.presentation.entity.FuelProductDisplayModel
 class ConfigurationActivity : AppCompatActivity(), SelectFuelProductListener,
     SelectLocationListener {
 
+    private lateinit var binding: ConfigurationActivityBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.configuration_activity)
+        binding = ConfigurationActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, ConfigureFuelProductOptionFragment.newInstance())

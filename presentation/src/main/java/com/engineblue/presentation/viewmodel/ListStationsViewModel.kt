@@ -9,6 +9,7 @@ import com.engineblue.domain.useCasesContract.preferences.GetSavedProduct
 import com.engineblue.domain.useCasesContract.preferences.SaveProductSelected
 import com.engineblue.presentation.entity.StationDisplayModel
 import com.engineblue.presentation.mapper.transformStationList
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class ListStationsViewModel(
@@ -37,6 +38,9 @@ class ListStationsViewModel(
         val productSelected = getSavedProduct()
 
         productSelected.id?.let {
+            async {
+
+            }
             launch {
                 getRemoteStations.getListRemoteStations(it).let { result ->
                     if (latitude != null && longitude != null) {

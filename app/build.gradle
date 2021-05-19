@@ -2,20 +2,18 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 
 def dep = rootProject.ext
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.adca.fuelprice"
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -34,6 +32,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {

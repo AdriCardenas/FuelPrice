@@ -1,14 +1,12 @@
 package com.engineblue.presentation.viewmodel
 
 import android.location.Geocoder
+import android.location.Location
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.engineblue.domain.useCasesContract.SaveLocationSelected
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
 class LocationViewModel
     (
@@ -51,5 +49,9 @@ class LocationViewModel
                 }
             }
         }
+    }
+
+    fun saveLocation(location: Location) {
+        saveLocationSelected.saveLocation(location.latitude, location.longitude)
     }
 }

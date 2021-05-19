@@ -36,4 +36,5 @@
     <string name="fill_your_location">Rellena tu ubicación</string>
     <string name="skip">Saltar</string>
     <string name="user_experience_configuration">La ubicación se utilizará para obtener la mejor experiencia del usuario</string>
+    <string name="location_gps_error">Error al obtener la ubicación del GPS</string>
 </resources>

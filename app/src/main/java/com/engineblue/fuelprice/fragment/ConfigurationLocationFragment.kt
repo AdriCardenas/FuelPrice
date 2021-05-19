@@ -1,24 +1,24 @@
 package com.engineblue.fuelprice.fragment
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
+import android.content.Context.LOCATION_SERVICE
 import android.location.Geocoder
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.lifecycle.Observer
 import com.engineblue.fuelprice.BuildConfig
 import com.engineblue.fuelprice.R
-import com.engineblue.fuelprice.activity.MainActivity
-import com.engineblue.fuelprice.callback.SelectFuelProductListener
 import com.engineblue.fuelprice.callback.SelectLocationListener
 import com.engineblue.fuelprice.fragment.base.BaseFragment
 import com.engineblue.fuelprice.utils.showSnackbar
 import com.engineblue.fuelprice.utils.toast
-import com.engineblue.presentation.entity.FuelProductDisplayModel
 import com.engineblue.presentation.viewmodel.LocationViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.karumi.dexter.Dexter
@@ -35,6 +35,8 @@ class ConfigurationLocationFragment : BaseFragment() {
 
     private lateinit var adapter: ArrayAdapter<String>
     private var selectLocationListener: SelectLocationListener? = null
+    private val locationManager: LocationManager? =
+        requireContext().getSystemService(LOCATION_SERVICE) as LocationManager?
     private val viewModel: LocationViewModel by sharedViewModel()
 
     companion object {
@@ -55,7 +57,7 @@ class ConfigurationLocationFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         button_skip.setOnClickListener {
-
+            selectLocationListener?.onLocationSelected()
         }
 
         manualLocation.setOnClickListener {
@@ -146,8 +148,26 @@ class ConfigurationLocationFragment : BaseFragment() {
             }.check()
     }
 
+    @SuppressLint("MissingPermission")
     private fun requestLocation() {
+        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 1f, object :
+            LocationListener {
+            override fun onLocationChanged(location: Location?) {
+                if (location != null)
+                    viewModel.saveLocation(location)
+                else {
+                    context?.toast(R.string.location_gps_error)
+                    selectLocationListener?.onLocationSelected()
+                }
+            }
 
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+
+            override fun onProviderEnabled(provider: String?) {}
+
+            override fun onProviderDisabled(provider: String?) {}
+
+        })
     }
 
 

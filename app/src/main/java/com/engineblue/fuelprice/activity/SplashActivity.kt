@@ -6,9 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.engineblue.fuelprice.R
+import com.engineblue.fuelprice.databinding.LauncherActivityBinding
+import com.engineblue.fuelprice.databinding.OnboardingActivityBinding
 import com.google.android.gms.ads.MobileAds
 
 class SplashActivity : AppCompatActivity() {
+
+    private lateinit var binding: LauncherActivityBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val darkMode = PreferenceManager.getDefaultSharedPreferences(this)
             .getString(getString(R.string.pref_dark_mode), "1") ?: "1"
@@ -33,7 +38,8 @@ class SplashActivity : AppCompatActivity() {
         }
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.launcher_activity)
+        binding = LauncherActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         MobileAds.initialize(this)
 
