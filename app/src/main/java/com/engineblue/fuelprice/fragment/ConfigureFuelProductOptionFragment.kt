@@ -2,7 +2,9 @@ package com.engineblue.fuelprice.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -11,10 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.products.FuelProductAdapter
 import com.engineblue.fuelprice.callback.SelectFuelProductListener
+import com.engineblue.fuelprice.databinding.ConfigureFuelProductOptionFragmentBinding
 import com.engineblue.fuelprice.fragment.base.BaseFragment
 import com.engineblue.presentation.entity.FuelProductDisplayModel
 import com.engineblue.presentation.viewmodel.FuelViewModel
-import kotlinx.android.synthetic.main.configure_fuel_product_option_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -23,11 +25,11 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
     private var listener: SelectFuelProductListener? = null
     private val viewModel: FuelViewModel by sharedViewModel()
 
+    lateinit var binding:ConfigureFuelProductOptionFragmentBinding
+
     companion object {
         fun newInstance() = ConfigureFuelProductOptionFragment()
     }
-
-    override fun getLayoutRes(): Int = R.layout.configure_fuel_product_option_fragment
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -39,16 +41,25 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = ConfigureFuelProductOptionFragmentBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = layoutManager
 
         val adapter = FuelProductAdapter(this)
 
         val dividerItemDecoration = DividerItemDecoration(
-            recyclerView.context,
+            binding.recyclerView.context,
             layoutManager.orientation
         )
 
@@ -59,9 +70,9 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
             )!!
         )
 
-        recyclerView.addItemDecoration(dividerItemDecoration)
+        binding.recyclerView.addItemDecoration(dividerItemDecoration)
 
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
         viewModel.fuelProductList.observe(viewLifecycleOwner, Observer { products ->
             products?.let { adapter.submitList(it) }
         })

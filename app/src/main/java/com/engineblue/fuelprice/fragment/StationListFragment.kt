@@ -2,21 +2,21 @@ package com.engineblue.fuelprice.fragment
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
+import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.fuel.StationAdapter
+import com.engineblue.fuelprice.databinding.ConfigureLocationOptionFragmentBinding
+import com.engineblue.fuelprice.databinding.StationListFragmentBinding
 import com.engineblue.fuelprice.fragment.base.BaseFragment
-import com.engineblue.fuelprice.utils.REQUEST_LOCATION_CODE
 import com.engineblue.fuelprice.utils.showSnackbar
 import com.engineblue.fuelprice.utils.toast
 import com.engineblue.presentation.viewmodel.ListStationsViewModel
@@ -29,17 +29,17 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import kotlinx.android.synthetic.main.station_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
 class StationListFragment : BaseFragment() {
 
-    override fun getLayoutRes(): Int = R.layout.station_list_fragment
     private var location: Location? = null
     private val viewModel: ListStationsViewModel by sharedViewModel()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    lateinit var binding: StationListFragmentBinding
 
     companion object {
         fun newInstance() = StationListFragment()
@@ -49,6 +49,15 @@ class StationListFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = StationListFragmentBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
 // private fun requestLocationPermissions() {
@@ -104,17 +113,17 @@ class StationListFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adRequest = AdRequest.Builder().build()
-        adView.loadAd(adRequest)
+        binding.adView.loadAd(adRequest)
 
         checkLocationPermission()
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        recyclerView.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = layoutManager
 
         val adapter = StationAdapter()
 
         val dividerItemDecoration = DividerItemDecoration(
-            recyclerView.context,
+            binding.recyclerView.context,
             layoutManager.orientation
         )
 
@@ -125,13 +134,13 @@ class StationListFragment : BaseFragment() {
             )!!
         )
 
-        recyclerView.addItemDecoration(dividerItemDecoration)
+        binding.recyclerView.addItemDecoration(dividerItemDecoration)
 
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
         viewModel.stationList.observe(viewLifecycleOwner, Observer { stations ->
             stations?.let {
                 adapter.submitList(it)
-                loadingView.visibility = View.GONE
+                binding.loadingView.visibility = View.GONE
             }
         })
     }
@@ -147,7 +156,7 @@ class StationListFragment : BaseFragment() {
                         getCurrentLocation()
                     } else {
                         // Permission request was denied.
-                        coordinatorLayout.showSnackbar(
+                        binding.coordinatorLayout.showSnackbar(
                             getString(R.string.location_permission_denied),
                             Snackbar.LENGTH_SHORT
                         )

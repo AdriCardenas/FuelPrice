@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.fuel.viewholder.StationViewHolder
+import com.engineblue.fuelprice.databinding.StationListItemBinding
 import com.engineblue.presentation.entity.StationDisplayModel
 
 class StationAdapter : ListAdapter<StationDisplayModel, StationViewHolder>(
@@ -22,7 +23,7 @@ class StationAdapter : ListAdapter<StationDisplayModel, StationViewHolder>(
     }) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationViewHolder =
         LayoutInflater.from(parent.context).run {
-            StationViewHolder(inflate(R.layout.station_list_item, parent, false))
+            StationViewHolder(StationListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
 
 

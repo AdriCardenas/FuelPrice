@@ -5,17 +5,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.location.Geocoder
-import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.engineblue.fuelprice.BuildConfig
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.callback.SelectLocationListener
+import com.engineblue.fuelprice.databinding.ConfigureLocationOptionFragmentBinding
 import com.engineblue.fuelprice.fragment.base.BaseFragment
 import com.engineblue.fuelprice.utils.showSnackbar
 import com.engineblue.fuelprice.utils.toast
@@ -26,8 +27,6 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import kotlinx.android.synthetic.main.configure_location_option_fragment.*
-import kotlinx.android.synthetic.main.station_list_fragment.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -35,15 +34,26 @@ class ConfigurationLocationFragment : BaseFragment() {
 
     private lateinit var adapter: ArrayAdapter<String>
     private var selectLocationListener: SelectLocationListener? = null
-    private val locationManager: LocationManager? =
+    private val locationManager: LocationManager? by lazy {
         requireContext().getSystemService(LOCATION_SERVICE) as LocationManager?
+    }
+
     private val viewModel: LocationViewModel by sharedViewModel()
+
+    private lateinit var binding: ConfigureLocationOptionFragmentBinding
 
     companion object {
         fun newInstance() = ConfigurationLocationFragment()
     }
 
-    override fun getLayoutRes(): Int = R.layout.configure_location_option_fragment
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = ConfigureLocationOptionFragmentBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -56,15 +66,15 @@ class ConfigurationLocationFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        button_skip.setOnClickListener {
+        binding.buttonSkip.setOnClickListener {
             selectLocationListener?.onLocationSelected()
         }
 
-        manualLocation.setOnClickListener {
-            manualLocationField.visibility = View.VISIBLE
+        binding.manualLocation.setOnClickListener {
+            binding.manualLocationField.visibility = View.VISIBLE
         }
 
-        autoLocation.setOnClickListener {
+        binding.autoLocation.setOnClickListener {
             checkLocationPermission()
         }
 
@@ -74,10 +84,10 @@ class ConfigurationLocationFragment : BaseFragment() {
             arrayListOf()
         )
 
-        simpleMultiAutoCompleteTextView.setAdapter(adapter)
-        simpleMultiAutoCompleteTextView.threshold = 1
+        binding.simpleMultiAutoCompleteTextView.setAdapter(adapter)
+        binding.simpleMultiAutoCompleteTextView.threshold = 1
 
-        simpleMultiAutoCompleteTextView.addTextChangedListener(object : TextWatcher {
+        binding.simpleMultiAutoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 s: CharSequence?,
                 start: Int,
@@ -128,7 +138,7 @@ class ConfigurationLocationFragment : BaseFragment() {
                         requestLocation()
                     } else {
                         // Permission request was denied.
-                        coordinatorLayout.showSnackbar(
+                        binding.coordinatorLayout.showSnackbar(
                             getString(R.string.location_permission_denied),
                             Snackbar.LENGTH_SHORT
                         )
@@ -150,24 +160,9 @@ class ConfigurationLocationFragment : BaseFragment() {
 
     @SuppressLint("MissingPermission")
     private fun requestLocation() {
-        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 1f, object :
-            LocationListener {
-            override fun onLocationChanged(location: Location?) {
-                if (location != null)
-                    viewModel.saveLocation(location)
-                else {
-                    context?.toast(R.string.location_gps_error)
-                    selectLocationListener?.onLocationSelected()
-                }
-            }
-
-            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-
-            override fun onProviderEnabled(provider: String?) {}
-
-            override fun onProviderDisabled(provider: String?) {}
-
-        })
+        locationManager?.requestLocationUpdates(
+            LocationManager.GPS_PROVIDER, 10, 1f
+        ) { location -> viewModel.saveLocation(location) }
     }
 
 

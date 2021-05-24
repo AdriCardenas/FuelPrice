@@ -14,17 +14,6 @@ abstract class BaseFragment : Fragment() {
         getDataFromArguments(arguments)
     }
 
-    @LayoutRes
-    abstract fun getLayoutRes(): Int
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(getLayoutRes(), container, false)
-    }
-
     open fun getDataFromArguments(arguments: Bundle?) {
 
     }

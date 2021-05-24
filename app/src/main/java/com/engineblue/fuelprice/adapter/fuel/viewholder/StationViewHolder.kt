@@ -4,19 +4,19 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
-import android.view.View
 import com.engineblue.fuelprice.adapter.viewholder.base.BaseViewHolder
+import com.engineblue.fuelprice.databinding.StationListItemBinding
 import com.engineblue.presentation.entity.StationDisplayModel
-import kotlinx.android.synthetic.main.station_list_item.view.*
 import java.text.DecimalFormat
 
-class StationViewHolder(view: View) : BaseViewHolder<StationDisplayModel>(view) {
+class StationViewHolder(private val binding: StationListItemBinding) :
+    BaseViewHolder<StationDisplayModel>(binding.root) {
 
     override fun bind(item: StationDisplayModel) {
-        itemView.stationName.text = getSpannableString(item.name, item.city)
-        itemView.stationAddress.text = item.address
-        itemView.stationDistance.text = "${formatDistance(distance = item.distance?.div(1000))} km"
-        itemView.stationFuelPrice.text = "${item.prize}€/L"
+        binding.stationName.text = getSpannableString(item.name, item.city)
+        binding.stationAddress.text = item.address
+        binding.stationDistance.text = "${formatDistance(distance = item.distance?.div(1000))} km"
+        binding.stationFuelPrice.text = "${item.prize}€/L"
 
 //        listener?.let{
 //            itemView.setOnClickListener {
@@ -39,7 +39,7 @@ class StationViewHolder(view: View) : BaseViewHolder<StationDisplayModel>(view) 
     private fun getSpannableString(
         name: String?,
         nameAbbreviature: String?
-    ): SpannableString? {
+    ): SpannableString {
         name?.let {
             val spannable = SpannableString("$name - $nameAbbreviature")
 
