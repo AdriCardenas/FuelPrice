@@ -15,6 +15,8 @@ import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.onboarding.OnBoardingAdapter
 import com.engineblue.fuelprice.databinding.OnboardingActivityBinding
 import com.engineblue.presentation.entity.OnBoardingItemDisplayModel
+import com.engineblue.presentation.viewmodel.OnBoardingViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class OnBoardingActivity : AppCompatActivity() {
@@ -22,6 +24,8 @@ class OnBoardingActivity : AppCompatActivity() {
     private lateinit var binding: OnboardingActivityBinding
 
     private lateinit var onBoardingAdapter: OnBoardingAdapter
+
+    private val viewModel:OnBoardingViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +40,7 @@ class OnBoardingActivity : AppCompatActivity() {
 
     private fun setupButton() {
         binding.buttonOnBoardingSkipAction.setOnClickListener {
+            viewModel.saveOnboardingChecked(getString(R.string.pref_first_start))
             startActivity(Intent(this, ConfigurationActivity::class.java))
             finish()
         }
@@ -57,6 +62,8 @@ class OnBoardingActivity : AppCompatActivity() {
                 binding.buttonOnBoardingSkipAction.visibility = View.VISIBLE
             } else {
                 binding.buttonOnBoardingSkipAction.visibility = View.GONE
+
+                viewModel.saveOnboardingChecked(getString(R.string.pref_first_start))
 
                 startActivity(Intent(this, ConfigurationActivity::class.java))
                 finish()

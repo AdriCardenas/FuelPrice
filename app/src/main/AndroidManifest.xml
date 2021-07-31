@@ -37,6 +37,9 @@
         <activity android:name=".activity.OnBoardingActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize" />
 
+        <activity android:name=".activity.MainActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize" />
+
     </application>
 
 </manifest>

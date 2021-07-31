@@ -38,9 +38,6 @@ class ListStationsViewModel(
         val productSelected = getSavedProduct()
 
         productSelected.id?.let {
-            async {
-
-            }
             launch {
                 getRemoteStations.getListRemoteStations(it).let { result ->
                     if (latitude != null && longitude != null) {

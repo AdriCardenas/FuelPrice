@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.fuel.StationAdapter
-import com.engineblue.fuelprice.databinding.ConfigureLocationOptionFragmentBinding
 import com.engineblue.fuelprice.databinding.StationListFragmentBinding
 import com.engineblue.fuelprice.fragment.base.BaseFragment
 import com.engineblue.fuelprice.utils.showSnackbar
@@ -115,7 +114,7 @@ class StationListFragment : BaseFragment() {
         val adRequest = AdRequest.Builder().build()
         binding.adView.loadAd(adRequest)
 
-        checkLocationPermission()
+//        checkLocationPermission()
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.recyclerView.layoutManager = layoutManager
@@ -143,6 +142,8 @@ class StationListFragment : BaseFragment() {
                 binding.loadingView.visibility = View.GONE
             }
         })
+
+        viewModel.loadStations()
     }
 
     private fun checkLocationPermission() {
