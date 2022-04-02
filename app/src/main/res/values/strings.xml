@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Precio gasolina</string>
+    <string name="app_name">Precio combustible</string>
 
     <string name="dark_mode">Modo oscuro</string>
     <string name="theme_dark">Tema oscuro</string>
@@ -37,4 +37,5 @@
     <string name="skip">Saltar</string>
     <string name="user_experience_configuration">La ubicación se utilizará para obtener la mejor experiencia del usuario</string>
     <string name="location_gps_error">Error al obtener la ubicación del GPS</string>
+    <string name="setting">Ajustes</string>
 </resources>
