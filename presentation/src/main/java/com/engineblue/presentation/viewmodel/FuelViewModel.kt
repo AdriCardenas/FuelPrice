@@ -15,8 +15,7 @@ class FuelViewModel
 ) :
     ViewModel(), ViewModelScope by scope {
 
-    private val filteredListFuelForCars =
-        listOf("1", "23", "20", "3", "21", "4", "5", "6", "7", "17", "18")
+    private val filteredListFuelForCars = listOf("1", "20", "3", "4", "5", "6", "17", "18")
 
     val fuelProductList =
         MutableLiveData<List<FuelProductDisplayModel>>()
