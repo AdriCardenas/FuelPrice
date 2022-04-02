@@ -6,10 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.engineblue.domain.entity.FuelEntity
 import com.engineblue.domain.useCasesContract.GetRemoteStations
 import com.engineblue.domain.useCasesContract.preferences.GetSavedProduct
-import com.engineblue.domain.useCasesContract.preferences.SaveProductSelected
 import com.engineblue.presentation.entity.StationDisplayModel
 import com.engineblue.presentation.mapper.transformStationList
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class ListStationsViewModel(
@@ -37,7 +35,7 @@ class ListStationsViewModel(
                 selectedFuel.postValue(productSelected)
 
                 getRemoteStations.getListRemoteStations(productId).let { result ->
-                    if (latitude != null && longitude != null) {
+                    stationList.postValue(if (latitude != null && longitude != null) {
                         val currentPosition = Location("Current Position")
 
                         currentPosition.latitude = latitude!!
@@ -46,13 +44,34 @@ class ListStationsViewModel(
                         val list = transformStationList(result, currentPosition)
                         val orderedList = list.sortedBy { it.distance }
 
-                        stationList.postValue(orderedList)
+                        setPricesColors(orderedList)
                     } else {
-                        stationList.postValue(transformStationList(result, null))
-                    }
+                        setPricesColors(transformStationList(result, null))
+                    })
                 }
             }
         }
+    }
+
+    private fun setPricesColors(list: List<StationDisplayModel>): List<StationDisplayModel> {
+        val prices = list.mapNotNull { it.price?.replace(",", ".")?.toFloat() }
+
+        val mean = prices.average()
+
+        list.forEach { station ->
+            val price = station.price?.replace(",", ".")?.toFloatOrNull()
+            if (price != null) {
+                if (price < (mean - 0.05)) {
+                    station.priceStatus = StationDisplayModel.PriceStatus.CHEAP
+                } else if ((mean - 0.05) < price && price < (mean + 0.05)) {
+                    station.priceStatus = StationDisplayModel.PriceStatus.REGULAR
+                } else {
+                    station.priceStatus = StationDisplayModel.PriceStatus.EXPENSIVE
+                }
+            }
+        }
+
+        return list
     }
 
     override fun onCleared() {

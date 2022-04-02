@@ -57,5 +57,9 @@
     <color name="md_theme_dark_shadow">#000000</color>
     <color name="md_theme_dark_primaryInverse">#BA1815</color>
 
+    <color name="cheap">#4CAF50</color>
+    <color name="regular">#FF9800</color>
+    <color name="expensive">#F44336</color>
+
     <color name="ic_launcher_background">#221E1F</color>
 </resources>

@@ -86,9 +86,8 @@ class StationListFragment : BaseFragment() {
         binding.adView.loadAd(adRequest)
 
         binding.toolbar.setOnMenuItemClickListener {
-            if(it.itemId == R.id.setting_fragment){
+            if (it.itemId == R.id.setting_fragment) {
                 startActivity(Intent(requireContext(), ConfigurationActivity::class.java))
-                true
             }
             false
         }

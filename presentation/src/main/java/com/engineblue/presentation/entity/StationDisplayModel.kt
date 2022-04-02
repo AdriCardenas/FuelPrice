@@ -13,7 +13,7 @@ data class StationDisplayModel(
     val location: Location? = null,
     val distance: Float? = null,
 
-    val prize: String? = null,
+    val price: String? = null,
 
     val name: String? = null,
     val schedule: String? = null,
@@ -21,8 +21,17 @@ data class StationDisplayModel(
     val zipCode: String? = null,
     val address: String? = null,
     val city: String? = null,
-    val province: String? = null
+    val province: String? = null,
+
+    var priceStatus: PriceStatus = PriceStatus.UNASSIGNED
 ) : StationItemFuelDisplayModel() {
+
+    enum class PriceStatus {
+        CHEAP,
+        REGULAR,
+        EXPENSIVE,
+        UNASSIGNED,
+    }
 
     override fun areItemsTheSame(other: StationItemFuelDisplayModel) =
         other is StationDisplayModel && id == other.id

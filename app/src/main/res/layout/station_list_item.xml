@@ -50,6 +50,18 @@
         app:layout_constraintVertical_bias="0"
         app:layout_constraintVertical_chainStyle="packed" />
 
+    <ImageView
+        android:id="@+id/priceStatus"
+        android:layout_width="0dp"
+        android:layout_height="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:contentDescription="@string/Precio"
+        app:layout_constraintBottom_toBottomOf="@id/stationFuelPrice"
+        app:layout_constraintEnd_toEndOf="@id/stationFuelPrice"
+        app:layout_constraintStart_toStartOf="@id/stationFuelPrice" />
+
     <TextView
         android:id="@+id/stationAddress"
         style="@style/TextAppearance.Material3.BodyMedium"

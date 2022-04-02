@@ -4,6 +4,9 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.view.View
+import androidx.core.content.ContextCompat
+import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.viewholder.base.BaseViewHolder
 import com.engineblue.fuelprice.databinding.StationListItemBinding
 import com.engineblue.presentation.entity.StationDisplayModel
@@ -16,7 +19,38 @@ class StationViewHolder(private val binding: StationListItemBinding) :
         binding.stationName.text = getSpannableString(item.name, item.city)
         binding.stationAddress.text = item.address
         binding.stationDistance.text = "${formatDistance(distance = item.distance?.div(1000))} km"
-        binding.stationFuelPrice.text = "${item.prize}€/L"
+        binding.stationFuelPrice.text = "${item.price}€/L"
+
+        when (item.priceStatus) {
+            StationDisplayModel.PriceStatus.CHEAP -> {
+                binding.priceStatus.visibility = View.VISIBLE
+                binding.priceStatus.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        binding.root.context,
+                        R.drawable.cheap_price_rectangle
+                    )
+                )
+            }
+            StationDisplayModel.PriceStatus.REGULAR -> {
+                binding.priceStatus.visibility = View.VISIBLE
+                binding.priceStatus.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        binding.root.context,
+                        R.drawable.regular_price_rectangle
+                    )
+                )
+            }
+            StationDisplayModel.PriceStatus.EXPENSIVE -> {
+                binding.priceStatus.visibility = View.VISIBLE
+                binding.priceStatus.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        binding.root.context,
+                        R.drawable.expensive_price_rectangle
+                    )
+                )
+            }
+            else -> binding.priceStatus.visibility = View.GONE
+        }
 
 //        listener?.let{
 //            itemView.setOnClickListener {
