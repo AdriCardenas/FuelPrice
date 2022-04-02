@@ -7,15 +7,17 @@
 
     <TextView
         android:id="@+id/stationFuelPrice"
-        style="@style/TextAppearance.Material3.BodyMedium"
+        style="@style/TextAppearance.Material3.BodyLarge"
         android:layout_width="wrap_content"
-        android:layout_height="42dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/background_station_price"
-        android:textColor="?colorTertiaryContainer"
         android:gravity="center"
         android:paddingStart="4dp"
+        android:paddingTop="16dp"
         android:paddingEnd="4dp"
+        android:paddingBottom="16dp"
         android:text="1.110€"
+        android:textColor="?colorTertiaryContainer"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
