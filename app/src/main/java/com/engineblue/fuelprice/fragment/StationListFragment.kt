@@ -59,35 +59,6 @@ class StationListFragment : BaseFragment() {
         return binding.root
     }
 
-// private fun requestLocationPermissions() {
-//     /*ruestPermissions(
-//         arrayOf(
-//             Manifest.permission.ACCESS_FINE_LOCATION,
-//             Manifest.permission.ACCESS_COARSE_LOCATION
-//         ),
-//         REQUEST_LOCATION_CODE
-//     )
-// }
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<String>,
-//        grantResults: IntArray
-//    ) {
-//        if (requestCode == REQUEST_LOCATION_CODE) {
-//            // Request for location permission.
-//            if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                getCurrentLocation()
-//            } else {
-//                // Permission request was denied.
-//                coordinatorLayout.showSnackbar(
-//                    getString(R.string.location_permission_denied),
-//                    Snackbar.LENGTH_SHORT
-//                )
-//            }
-//        }
-//    }
-
     @SuppressLint("MissingPermission")
     private fun getCurrentLocation() {
         fusedLocationClient.lastLocation
@@ -114,8 +85,6 @@ class StationListFragment : BaseFragment() {
         val adRequest = AdRequest.Builder().build()
         binding.adView.loadAd(adRequest)
 
-//        checkLocationPermission()
-
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.recyclerView.layoutManager = layoutManager
 
@@ -136,14 +105,14 @@ class StationListFragment : BaseFragment() {
         binding.recyclerView.addItemDecoration(dividerItemDecoration)
 
         binding.recyclerView.adapter = adapter
-        viewModel.stationList.observe(viewLifecycleOwner, Observer { stations ->
+        viewModel.stationList.observe(viewLifecycleOwner) { stations ->
             stations?.let {
                 adapter.submitList(it)
                 binding.loadingView.visibility = View.GONE
             }
-        })
+        }
 
-        viewModel.loadStations()
+        checkLocationPermission()
     }
 
     private fun checkLocationPermission() {
@@ -175,30 +144,25 @@ class StationListFragment : BaseFragment() {
             .withErrorListener {
                 context?.toast(it.name)
             }.check()
-//        when {
-//            ContextCompat.checkSelfPermission(
-//                requireContext(),
-//                Manifest.permission.ACCESS_FINE_LOCATION
-//            ) == PackageManager.PERMISSION_GRANTED &&
-//                    ContextCompat.checkSelfPermission(
-//                        requireContext(),
-//                        Manifest.permission.ACCESS_COARSE_LOCATION
-//                    ) == PackageManager.PERMISSION_GRANTED
-//            -> {
-//                getCurrentLocation()
-//            }
-//            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) &&
-//                    shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-//            -> {
-//                coordinatorLayout.showSnackbar(
-//                    getString(R.string.location_access_required),
-//                    Snackbar.LENGTH_INDEFINITE,
-//                    getString(R.string.ok)
-//                ) { requestLocationPermissions() }
-//            }
-//            else -> {
-//                requestLocationPermissions()
-//            }
-//        }
     }
 }
+
+//                    if (location?.latitude != null && location?.longitude != null) {
+//                        val geocoder: Geocoder = Geocoder(requireContext(), Locale.getDefault())
+//
+//                        val addresses: List<Address> = geocoder.getFromLocation(
+//                            location!!.latitude,
+//                            location!!.longitude,
+//                            1
+//                        ) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+//
+//
+//                        val address: String =
+//                            addresses[0].getAddressLine(0) // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+//
+//                        val city: String = addresses[0].getLocality()
+//                        val state: String = addresses[0].getAdminArea()
+//                        val country: String = addresses[0].getCountryName()
+//
+//                        Log.d("POSITION**", "$address $city $state $country $postalCode $knownName")
+//                    }

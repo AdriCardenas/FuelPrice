@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 class ListStationsViewModel(
     private val getRemoteStations: GetRemoteStations,
     private val getSavedProduct: GetSavedProduct,
-    private val saveProductSelected: SaveProductSelected,
     scope: ViewModelScope = viewModelScope()
 ) :
     ViewModel(), ViewModelScope by scope {
@@ -28,18 +27,18 @@ class ListStationsViewModel(
     val stationList =
         MutableLiveData<List<StationDisplayModel>>()
 
-    fun getSavedProduct(): FuelEntity {
+    private fun getSavedProduct(): FuelEntity {
         this.selectedFuel = getSavedProduct.getSavedProduct()
 
         return selectedFuel
     }
 
     fun loadStations() {
-        val productSelected = getSavedProduct()
+        launch {
+            val productSelected = getSavedProduct()
 
-        productSelected.id?.let {
-            launch {
-                getRemoteStations.getListRemoteStations(it).let { result ->
+            productSelected.id?.let { productId ->
+                getRemoteStations.getListRemoteStations(productId).let { result ->
                     if (latitude != null && longitude != null) {
                         val currentPosition = Location("Current Position")
 

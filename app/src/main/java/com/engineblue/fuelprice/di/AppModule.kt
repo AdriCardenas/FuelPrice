@@ -104,8 +104,7 @@ val mViewModels = module {
     viewModel {
         ListStationsViewModel(
             getRemoteStations = get(),
-            getSavedProduct = get(),
-            saveProductSelected = get()
+            getSavedProduct = get()
         )
     }
 

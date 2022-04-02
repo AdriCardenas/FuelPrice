@@ -13,6 +13,5 @@ class GetRemoteStationsImpl(
     override suspend fun getListRemoteStations(idProduct: String): List<StationEntity> =
         withContext(dispatcher) {
             repository.getStations(idProduct)
-
         }
 }
