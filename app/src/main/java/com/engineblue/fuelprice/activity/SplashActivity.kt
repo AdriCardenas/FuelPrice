@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.databinding.LauncherActivityBinding
-import com.engineblue.fuelprice.databinding.OnboardingActivityBinding
 import com.engineblue.presentation.viewmodel.SplashViewModel
 import com.google.android.gms.ads.MobileAds
 import org.koin.androidx.viewmodel.ext.android.viewModel

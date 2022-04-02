@@ -2,17 +2,17 @@ package com.engineblue.fuelprice.fragment
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.engineblue.fuelprice.R
+import com.engineblue.fuelprice.activity.ConfigurationActivity
 import com.engineblue.fuelprice.adapter.fuel.StationAdapter
 import com.engineblue.fuelprice.databinding.StationListFragmentBinding
 import com.engineblue.fuelprice.fragment.base.BaseFragment
@@ -85,17 +85,38 @@ class StationListFragment : BaseFragment() {
         val adRequest = AdRequest.Builder().build()
         binding.adView.loadAd(adRequest)
 
+        binding.toolbar.setOnMenuItemClickListener {
+            if(it.itemId == R.id.setting_fragment){
+                startActivity(Intent(requireContext(), ConfigurationActivity::class.java))
+                true
+            }
+            false
+        }
+
+        val adapter = initializeRecycler()
+        subscribeToViewModel(adapter)
+
+        checkLocationPermission()
+    }
+
+    private fun initializeRecycler(): StationAdapter {
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.recyclerView.layoutManager = layoutManager
 
         val adapter = StationAdapter()
 
-        binding.recyclerView.addItemDecoration(DividerItemDecoration(
-            binding.recyclerView.context,
-            layoutManager.orientation
-        ))
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                binding.recyclerView.context,
+                layoutManager.orientation
+            )
+        )
 
         binding.recyclerView.adapter = adapter
+        return adapter
+    }
+
+    private fun subscribeToViewModel(adapter: StationAdapter) {
         viewModel.stationList.observe(viewLifecycleOwner) { stations ->
             stations?.let {
                 adapter.submitList(it)
@@ -108,8 +129,6 @@ class StationListFragment : BaseFragment() {
                 binding.toolbar.subtitle = fuel.name
             }
         }
-
-        checkLocationPermission()
     }
 
     private fun checkLocationPermission() {

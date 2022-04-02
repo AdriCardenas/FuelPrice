@@ -28,7 +28,8 @@
         <activity
             android:name="com.engineblue.fuelprice.activity.SplashActivity"
             android:theme="@style/AppTheme.Launcher"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

@@ -8,6 +8,6 @@ class OnBoardingViewModel(
     private val saveBooleanPreference: SaveBoolean
 ) : ViewModel() {
     fun saveOnboardingChecked(key: String) {
-        saveBooleanPreference.saveBoolean(key, false)
+        saveBooleanPreference.saveBoolean(key, true)
     }
 }

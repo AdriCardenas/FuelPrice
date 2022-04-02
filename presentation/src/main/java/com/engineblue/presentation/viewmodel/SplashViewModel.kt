@@ -9,6 +9,6 @@ class SplashViewModel(
     private val getSavedBoolean: GetSavedBoolean,
     private val getSavedProduct: GetSavedProduct
 ) : ViewModel() {
-    fun getPreferencesFirstStart(key:String) : Boolean = getSavedBoolean.getSavedBoolean(key)
+    fun getPreferencesFirstStart(key:String) : Boolean = !getSavedBoolean.getSavedBoolean(key)
     fun getSelectedFuel() : FuelEntity = getSavedProduct.getSavedProduct()
 }

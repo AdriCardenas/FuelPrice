@@ -5,12 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.products.FuelProductAdapter
 import com.engineblue.fuelprice.callback.SelectFuelProductListener
 import com.engineblue.fuelprice.databinding.ConfigureFuelProductOptionFragmentBinding
@@ -25,7 +22,7 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
     private var listener: SelectFuelProductListener? = null
     private val viewModel: FuelViewModel by sharedViewModel()
 
-    lateinit var binding: ConfigureFuelProductOptionFragmentBinding
+    private lateinit var binding: ConfigureFuelProductOptionFragmentBinding
 
     companion object {
         fun newInstance() = ConfigureFuelProductOptionFragment()
@@ -33,8 +30,6 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
-        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         if (context is SelectFuelProductListener) {
             listener = context
@@ -67,9 +62,9 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
         )
 
         binding.recyclerView.adapter = adapter
-        viewModel.fuelProductList.observe(viewLifecycleOwner, Observer { products ->
+        viewModel.fuelProductList.observe(viewLifecycleOwner) { products ->
             products?.let { adapter.submitList(it) }
-        })
+        }
 
         viewModel.loadProducts()
     }
