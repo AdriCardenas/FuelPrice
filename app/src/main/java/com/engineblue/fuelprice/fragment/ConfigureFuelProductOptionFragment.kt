@@ -25,7 +25,7 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
     private var listener: SelectFuelProductListener? = null
     private val viewModel: FuelViewModel by sharedViewModel()
 
-    lateinit var binding:ConfigureFuelProductOptionFragmentBinding
+    lateinit var binding: ConfigureFuelProductOptionFragmentBinding
 
     companion object {
         fun newInstance() = ConfigureFuelProductOptionFragment()
@@ -46,7 +46,8 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = ConfigureFuelProductOptionFragmentBinding.inflate(layoutInflater, container, false)
+        binding =
+            ConfigureFuelProductOptionFragmentBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -58,19 +59,12 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
 
         val adapter = FuelProductAdapter(this)
 
-        val dividerItemDecoration = DividerItemDecoration(
-            binding.recyclerView.context,
-            layoutManager.orientation
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                binding.recyclerView.context,
+                layoutManager.orientation
+            )
         )
-
-        dividerItemDecoration.setDrawable(
-            getDrawable(
-                requireContext(),
-                R.drawable.divider_decoration
-            )!!
-        )
-
-        binding.recyclerView.addItemDecoration(dividerItemDecoration)
 
         binding.recyclerView.adapter = adapter
         viewModel.fuelProductList.observe(viewLifecycleOwner, Observer { products ->
@@ -81,7 +75,7 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
     }
 
     override fun selectProduct(product: FuelProductDisplayModel) {
-        if(product.id!=null && product.name!=null) {
+        if (product.id != null && product.name != null) {
             viewModel.saveProduct(product.id!!, product.name!!)
             listener?.selectProduct(product)
         }

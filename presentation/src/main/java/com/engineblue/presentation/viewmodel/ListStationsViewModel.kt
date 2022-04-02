@@ -19,7 +19,7 @@ class ListStationsViewModel(
 ) :
     ViewModel(), ViewModelScope by scope {
 
-    private val selectedFuel = MutableLiveData<FuelEntity>()
+    val selectedFuel = MutableLiveData<FuelEntity>()
 
     var latitude: Double? = null
     var longitude: Double? = null

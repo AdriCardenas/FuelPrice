@@ -90,25 +90,22 @@ class StationListFragment : BaseFragment() {
 
         val adapter = StationAdapter()
 
-        val dividerItemDecoration = DividerItemDecoration(
+        binding.recyclerView.addItemDecoration(DividerItemDecoration(
             binding.recyclerView.context,
             layoutManager.orientation
-        )
-
-        dividerItemDecoration.setDrawable(
-            AppCompatResources.getDrawable(
-                requireContext(),
-                R.drawable.divider_decoration
-            )!!
-        )
-
-        binding.recyclerView.addItemDecoration(dividerItemDecoration)
+        ))
 
         binding.recyclerView.adapter = adapter
         viewModel.stationList.observe(viewLifecycleOwner) { stations ->
             stations?.let {
                 adapter.submitList(it)
                 binding.loadingView.visibility = View.GONE
+            }
+        }
+
+        viewModel.selectedFuel.observe(viewLifecycleOwner) { fuel ->
+            fuel?.let {
+                binding.toolbar.subtitle = fuel.name
             }
         }
 

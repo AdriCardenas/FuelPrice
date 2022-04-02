@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#353535</color>
-    <color name="colorPrimaryDark">#262626</color>
-    <color name="colorAccent">#03DAC5</color>
 
-    <color name="backgroundAppColor">#050505</color>
-    <color name="backgroundCardColor">#474747</color>
-    <color name="backgroundSplashColor">#474747</color>
-
-    <color name="statusBarColor">#050505</color>
-
-    <color name="textColorWhite">#222222</color>
-    <color name="textColorBlack">#DDDDDD</color>
-    <color name="textColorSecondaryBlack">#939393</color>
-    <color name="dividerColor">#B7B7B7</color>
-
-    <color name="colorOnBoardingIndicatorColorActive">#03DAC5</color>
-    <color name="colorOnBoardingIndicatorColorInactive">#B7B7B7</color>
 </resources>

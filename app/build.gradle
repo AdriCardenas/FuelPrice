@@ -7,13 +7,13 @@ apply plugin: 'kotlin-kapt'
 def dep = rootProject.ext
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.adca.fuelprice"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -50,8 +50,8 @@ dependencies {
     implementation "$dep.android.preferenceKtx"
     implementation "$dep.android.material"
 
-    implementation 'com.google.android.gms:play-services-ads:19.4.0'
-    implementation "com.google.android.gms:play-services-location:17.1.0"
+    implementation 'com.google.android.gms:play-services-ads:20.6.0'
+    implementation "com.google.android.gms:play-services-location:19.0.1"
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     implementation 'com.karumi:dexter:6.2.1'

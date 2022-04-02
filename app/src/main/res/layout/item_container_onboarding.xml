@@ -2,36 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:layout_marginStart="30dp"
     android:layout_marginEnd="30dp"
-    android:orientation="vertical"
     android:layout_marginBottom="40dp"
+    android:gravity="center"
+    android:orientation="vertical"
     android:padding="20dp">
+
     <ImageView
         android:id="@+id/imageOnBoarding"
         android:layout_width="180dp"
         android:layout_height="180dp"
+        android:layout_margin="15dp"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/app_name"
-        android:layout_margin="15dp"/>
+        android:contentDescription="@string/app_name" />
 
     <TextView
         android:id="@+id/titleOnBoarding"
+        style="@style/TextAppearance.Material3.TitleLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/textColorBlack"
-        android:textSize="18sp"
         android:layout_marginTop="12dp"
-        android:textStyle="bold"/>
+        android:gravity="center" />
 
 
     <TextView
         android:id="@+id/descriptionOnBoarding"
+        style="@style/TextAppearance.Material3.TitleMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/textColorBlack"
-        android:textSize="16sp"/>
+        android:gravity="center" />
 </LinearLayout>

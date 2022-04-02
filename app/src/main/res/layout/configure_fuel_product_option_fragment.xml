@@ -6,8 +6,7 @@
 
     <TextView
         android:id="@+id/textViewTitle"
-        style="@style/Font.Header.Title"
-        android:textColor="@color/textColorBlack"
+        style="@style/TextAppearance.Material3.TitleLarge"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -21,14 +20,12 @@
 
     <TextView
         android:id="@+id/textView"
-        style="@style/Font.Header"
-        android:textColor="@color/textColorBlack"
+        style="@style/TextAppearance.Material3.TitleMedium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:textSize="18sp"
         android:text="@string/select_your_preferred_fuel"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"

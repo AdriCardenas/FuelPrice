@@ -5,5 +5,5 @@
         android:width="20dp"
         android:height="10dp" />
     <corners android:radius="12dp"/>
-    <solid android:color="@color/colorOnBoardingIndicatorColorActive"/>
+    <solid android:color="?colorPrimary"/>
 </shape>
