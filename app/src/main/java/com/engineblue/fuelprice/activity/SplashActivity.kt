@@ -18,27 +18,27 @@ class SplashActivity : AppCompatActivity() {
     private val viewModel: SplashViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val darkMode = PreferenceManager.getDefaultSharedPreferences(this)
-            .getString(getString(R.string.pref_dark_mode), "1") ?: "1"
-
-        val values =
-            resources?.getStringArray(R.array.pref_entries_dark_mode_values) ?: arrayOf(
-                "1",
-                "2",
-                "3"
-            )
-
-        when (darkMode) {
-            values[1] -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }
-            values[2] -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
-            else -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
+//        val darkMode = PreferenceManager.getDefaultSharedPreferences(this)
+//            .getString(getString(R.string.pref_dark_mode), "1") ?: "1"
+//
+//        val values =
+//            resources?.getStringArray(R.array.pref_entries_dark_mode_values) ?: arrayOf(
+//                "1",
+//                "2",
+//                "3"
+//            )
+//
+//        when (darkMode) {
+//            values[1] -> {
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//            }
+//            values[2] -> {
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+//            }
+//            else -> {
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//            }
+//        }
 
         super.onCreate(savedInstanceState)
         binding = LauncherActivityBinding.inflate(layoutInflater)
