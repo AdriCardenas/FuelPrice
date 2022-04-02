@@ -108,3 +108,14 @@ output.json
 /build
 /captures
 .externalNativeBuild
+
+/.idea/.gitignore
+/.idea/.name
+/.idea/compiler.xml
+/.idea/deploymentTargetDropDown.xml
+/gradle/wrapper/gradle-wrapper.jar
+/gradle/wrapper/gradle-wrapper.properties
+/gradlew
+/gradlew.bat
+/.idea/jarRepositories.xml
+/.idea/misc.xml
