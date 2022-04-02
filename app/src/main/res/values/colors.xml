@@ -57,5 +57,5 @@
     <color name="md_theme_dark_shadow">#000000</color>
     <color name="md_theme_dark_primaryInverse">#BA1815</color>
 
-    <color name="transparent">#00FFFFFF</color>
+    <color name="ic_launcher_background">#221E1F</color>
 </resources>
