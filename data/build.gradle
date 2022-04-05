@@ -10,7 +10,7 @@ dependencies {
     implementation "$dep.kotlin.stdlib"
 
     implementation "$dep.network.retrofit"
-    implementation "$dep.network.gson"
+    implementation "$dep.network.moshi"
 }
 
 sourceCompatibility = "1.8"

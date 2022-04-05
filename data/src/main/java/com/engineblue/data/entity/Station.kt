@@ -1,20 +1,20 @@
 package com.engineblue.data.entity
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class Station(
-    @SerializedName("IDEESS") val id: String? = null,
+    @Json(name ="IDEESS") val id: String? = null,
 
-    @SerializedName("Latitud") val latitude: String? = null,
-    @SerializedName("Longitud (WGS84)") val longitude: String? = null,
+    @Json(name ="Latitud") val latitude: String? = null,
+    @Json(name ="Longitud (WGS84)") val longitude: String? = null,
 
-    @SerializedName("PrecioProducto") val prize: String? = null,
+    @Json(name ="PrecioProducto") val prize: String? = null,
 
-    @SerializedName("Rótulo") val name: String? = null,
-    @SerializedName("Horario") val schedule: String? = null,
+    @Json(name ="Rótulo") val name: String? = null,
+    @Json(name ="Horario") val schedule: String? = null,
 
-    @SerializedName("C.P.") val zipCode: String? = null,
-    @SerializedName("Dirección") val direction: String? = null,
-    @SerializedName("Municipio") val city: String? = null,
-    @SerializedName("Provincia") val province: String? = null
+    @Json(name ="C.P.") val zipCode: String? = null,
+    @Json(name ="Dirección") val direction: String? = null,
+    @Json(name ="Municipio") val city: String? = null,
+    @Json(name ="Provincia") val province: String? = null
 )

@@ -1,7 +1,7 @@
 package com.engineblue.data.entity
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class StationWrapperResponse(
-    @SerializedName("ListaEESSPrecio") val stations: List<Station>?
+    @Json(name ="ListaEESSPrecio") val stations: List<Station>?
 )

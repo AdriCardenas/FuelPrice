@@ -1,9 +1,10 @@
 package com.engineblue.data.entity
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+
 
 data class Fuel(
-    @SerializedName("IDProducto") val id: String? = null,
-    @SerializedName("NombreProducto") val name: String? = null,
-    @SerializedName("NombreProductoAbreviatura") val nameAbbreviature: String? = null
+    @Json(name = "IDProducto") val id: String? = null,
+    @Json(name = "NombreProducto") val name: String? = null,
+    @Json(name ="NombreProductoAbreviatura") val nameAbbreviature: String? = null
 )
