@@ -1,5 +1,6 @@
 package com.engineblue.fuelprice.network
 
+import com.engineblue.fuelprice.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,11 +19,14 @@ private fun retrofitClient(baseUrl: String, httpClient: OkHttpClient): Retrofit 
 
 
 private fun httpClient(): OkHttpClient {
-    val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
     val clientBuilder = OkHttpClient.Builder()
 
-    httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
-    clientBuilder.addInterceptor(httpLoggingInterceptor)
+    if(BuildConfig.DEBUG){
+        val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
+
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
+        clientBuilder.addInterceptor(httpLoggingInterceptor)
+    }
 
     clientBuilder.readTimeout(30, TimeUnit.SECONDS)
     clientBuilder.writeTimeout(30, TimeUnit.SECONDS)

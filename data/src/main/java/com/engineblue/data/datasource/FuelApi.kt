@@ -11,7 +11,8 @@ interface FuelApi {
     @GET("Listados/ProductosPetroliferos")
     suspend fun getFuels(): Response<List<Fuel>>
 
+
+//    @GET("EstacionesTerrestres/FiltroCCAAProducto/01/{id}")
     @GET("EstacionesTerrestres/FiltroProducto/{id}")
-   // @GET("EstacionesTerrestres/FiltroMunicipioProducto/2084/{id}")
     suspend fun getStationsByProduct(@Path("id") id: String): Response<StationWrapperResponse>
 }

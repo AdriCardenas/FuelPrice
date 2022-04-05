@@ -20,6 +20,6 @@ fun transformStationList(list: List<Station>?, logger: Logger): List<StationEnti
             element.city,
             element.province
         )
-    }?.toList() ?: listOf()
+    } ?: listOf()
 
 }
