@@ -8,6 +8,7 @@ dependencies {
     implementation project(path: "$dep.modules.domain")
 
     implementation "$dep.kotlin.stdlib"
+    implementation "$dep.android.annotation"
 
     implementation "$dep.network.retrofit"
     implementation "$dep.network.moshi"

@@ -49,12 +49,12 @@ dependencies {
     implementation "$dep.android.recyclerView"
     implementation "$dep.android.preferenceKtx"
     implementation "$dep.android.material"
+    implementation "$dep.android.viewpager"
 
-    implementation 'com.google.android.gms:play-services-ads:20.6.0'
-    implementation "com.google.android.gms:play-services-location:19.0.1"
-    implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation "$dep.google.ads"
+    implementation "$dep.google.location"
 
-    implementation 'com.karumi:dexter:6.2.3'
+    implementation "$dep.dexter.core"
 
     implementation "$dep.kotlin.stdlib"
     implementation "$dep.kotlin.ktx"
@@ -69,9 +69,10 @@ dependencies {
 
     implementation "$dep.multidex.core"
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation "$dep.test.junit"
+    testImplementation "$dep.test.coroutines"
+    androidTestImplementation "$dep.androidTest.runner"
+    androidTestImplementation "$dep.androidTest.rules"
 
     implementation "$dep.network.moshiKotlin"
 

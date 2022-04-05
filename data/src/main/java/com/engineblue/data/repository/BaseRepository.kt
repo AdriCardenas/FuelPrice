@@ -42,6 +42,7 @@ abstract class BaseRepository(private val logger: Logger) {
                 Level.FINE,
                 getRepositoryName() + "$errorMessage & Exception - ${response.body()}"
             )
+            logger.log(Level.FINE, response.toString())
             return ResponseResult.Error(IOException("Ha ocurrido un error al lanzar la api - $errorMessage"))
         } catch (exception: Exception) {
             val error = exception.message ?: "Ha ocurrido un error al lanzar la api - $errorMessage"

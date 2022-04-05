@@ -35,13 +35,11 @@ dependencies {
     implementation "$dep.kotlin.ktx"
 
     // Preferences DataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation "$dep.android.datastorePreferences"
 
     // Proto DataStore
-    implementation "androidx.datastore:datastore-core:1.0.0"
+    implementation "$dep.android.datastoreCore"
 
-    // ViewModel
-    implementation "$dep.android.viewmodelKtx"
 }
 
 sourceCompatibility = "1.8"
