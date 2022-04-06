@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.preference.PreferenceManager
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.databinding.LauncherActivityBinding
@@ -11,7 +12,7 @@ import com.engineblue.presentation.viewmodel.SplashViewModel
 import com.google.android.gms.ads.MobileAds
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SplashActivity : AppCompatActivity() {
+class RoutingActivity : AppCompatActivity() {
 
     private lateinit var binding: LauncherActivityBinding
 
@@ -39,6 +40,7 @@ class SplashActivity : AppCompatActivity() {
 //                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 //            }
 //        }
+        val splashScreen = installSplashScreen()
 
         super.onCreate(savedInstanceState)
         binding = LauncherActivityBinding.inflate(layoutInflater)
@@ -47,6 +49,8 @@ class SplashActivity : AppCompatActivity() {
         MobileAds.initialize(this)
 
         val firstStart = viewModel.getPreferencesFirstStart(getString(R.string.pref_first_start))
+
+        splashScreen.setKeepOnScreenCondition { true }
 
         if (firstStart) {
             startActivity(Intent(this, OnBoardingActivity::class.java))
