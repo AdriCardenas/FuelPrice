@@ -8,11 +8,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.engineblue.fuelprice.R
-import com.engineblue.fuelprice.activity.ConfigurationActivity
 import com.engineblue.fuelprice.adapter.fuel.StationAdapter
 import com.engineblue.fuelprice.databinding.StationListFragmentBinding
 import com.engineblue.fuelprice.fragment.base.BaseFragment
@@ -87,7 +87,7 @@ class StationListFragment : BaseFragment() {
 
         binding.toolbar.setOnMenuItemClickListener {
             if (it.itemId == R.id.setting_fragment) {
-                startActivity(Intent(requireContext(), ConfigurationActivity::class.java))
+                findNavController().navigate(R.id.action_list_stations_to_configuration_fuel_product)
             }
             false
         }

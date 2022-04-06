@@ -36,6 +36,7 @@ ext {
             dexter                 : "6.2.3",
             annotation             : "1.3.0",
             splashScreen           : "1.0.0-beta02",
+            navigation             : "2.5.0-alpha03",
     ]
 
     android = [
@@ -51,6 +52,8 @@ ext {
             datastoreCore        : "androidx.datastore:datastore-core:$versions.datastorecore",
             annotation           : "androidx.annotation:annotation:$versions.annotation",
             splashScreen         : "androidx.core:core-splashscreen:$versions.splashScreen",
+            navigationFragment   : "androidx.navigation:navigation-fragment-ktx:$versions.navigation",
+            navigationUi         : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
     ]
 
     google = [

@@ -1,36 +1,43 @@
-package com.engineblue.fuelprice.activity
+package com.engineblue.fuelprice.fragment
 
-import android.content.Intent
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.onboarding.OnBoardingAdapter
-import com.engineblue.fuelprice.databinding.OnboardingActivityBinding
+import com.engineblue.fuelprice.databinding.OnboardingFragmentBinding
+import com.engineblue.fuelprice.fragment.base.BaseFragment
 import com.engineblue.presentation.entity.OnBoardingItemDisplayModel
 import com.engineblue.presentation.viewmodel.OnBoardingViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+class OnBoardingFragment : BaseFragment() {
 
-class OnBoardingActivity : AppCompatActivity() {
+    private val viewModel: OnBoardingViewModel by sharedViewModel()
 
-    private lateinit var binding: OnboardingActivityBinding
+    lateinit var binding: OnboardingFragmentBinding
 
     private lateinit var onBoardingAdapter: OnBoardingAdapter
 
-    private val viewModel:OnBoardingViewModel by viewModel()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = OnboardingFragmentBinding.inflate(layoutInflater, container, false)
+        return binding.root
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = OnboardingActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupOnBoardingItems()
         setupOnBoardingIndicators()
@@ -41,8 +48,7 @@ class OnBoardingActivity : AppCompatActivity() {
     private fun setupButton() {
         binding.buttonOnBoardingSkipAction.setOnClickListener {
             viewModel.saveOnboardingChecked(getString(R.string.pref_first_start))
-            startActivity(Intent(this, ConfigurationActivity::class.java))
-            finish()
+            navigateToConfigurationFuelProduct()
         }
 
         binding.goBackButton.setOnClickListener {
@@ -64,11 +70,13 @@ class OnBoardingActivity : AppCompatActivity() {
                 binding.buttonOnBoardingSkipAction.visibility = View.GONE
 
                 viewModel.saveOnboardingChecked(getString(R.string.pref_first_start))
-
-                startActivity(Intent(this, ConfigurationActivity::class.java))
-                finish()
+                navigateToConfigurationFuelProduct()
             }
         }
+    }
+
+    private fun navigateToConfigurationFuelProduct() {
+        findNavController().navigate(R.id.action_onBoardingFragment_to_configuration_fuel_product)
     }
 
     private fun setupViewPager() {
@@ -109,19 +117,19 @@ class OnBoardingActivity : AppCompatActivity() {
         var i = 0
 
         while (i < onBoardingAdapter.itemCount) {
-            val image = ImageView(this)
+            val image = ImageView(requireContext())
 
             if (i == 0) {
                 image.setImageDrawable(
                     ContextCompat.getDrawable(
-                        this,
+                        requireContext(),
                         R.drawable.onboarding_indicator_active
                     )
                 )
             } else {
                 image.setImageDrawable(
                     ContextCompat.getDrawable(
-                        this,
+                        requireContext(),
                         R.drawable.onboarding_indicator_inactive
                     )
                 )
@@ -168,7 +176,7 @@ class OnBoardingActivity : AppCompatActivity() {
             if (value is ImageView) {
                 if (index == currentIndex) {
                     val crossfader = ContextCompat.getDrawable(
-                        this,
+                        requireContext(),
                         R.drawable.transition_active_button
                     ) as TransitionDrawable
                     value.setImageDrawable(
@@ -180,7 +188,7 @@ class OnBoardingActivity : AppCompatActivity() {
                 } else {
                     value.setImageDrawable(
                         ContextCompat.getDrawable(
-                            this,
+                            requireContext(),
                             R.drawable.onboarding_indicator_inactive
                         )
                     )

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main">
+
+    <fragment
+        android:id="@+id/onboarding_fragment"
+        android:name="com.engineblue.fuelprice.fragment.OnBoardingFragment"
+        android:label="OnBoardingFragment"
+        tools:layout="@layout/onboarding_fragment">
+        <action
+            android:id="@+id/action_onBoardingFragment_to_configuration_fuel_product"
+            app:destination="@id/configuration_fuel_product" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/configuration_fuel_product"
+        android:name="com.engineblue.fuelprice.fragment.ConfigureFuelProductOptionFragment"
+        tools:layout="@layout/configure_fuel_product_option_fragment">
+
+        <action
+            android:id="@+id/action_configuration_fuel_product_to_list_stations"
+            app:destination="@id/list_stations" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/list_stations"
+        android:name="com.engineblue.fuelprice.fragment.StationListFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/station_list_fragment">
+
+        <action
+            android:id="@+id/action_list_stations_to_configuration_fuel_product"
+            app:destination="@id/configuration_fuel_product" />
+    </fragment>
+
+</navigation>

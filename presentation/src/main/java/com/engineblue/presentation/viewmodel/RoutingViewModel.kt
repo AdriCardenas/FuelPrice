@@ -5,7 +5,7 @@ import com.engineblue.domain.entity.FuelEntity
 import com.engineblue.domain.useCasesContract.preferences.GetSavedBoolean
 import com.engineblue.domain.useCasesContract.preferences.GetSavedProduct
 
-class SplashViewModel(
+class RoutingViewModel(
     private val getSavedBoolean: GetSavedBoolean,
     private val getSavedProduct: GetSavedProduct
 ) : ViewModel() {

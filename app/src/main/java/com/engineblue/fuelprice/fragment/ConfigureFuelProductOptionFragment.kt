@@ -1,13 +1,14 @@
 package com.engineblue.fuelprice.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.adapter.products.FuelProductAdapter
 import com.engineblue.fuelprice.callback.SelectFuelProductListener
 import com.engineblue.fuelprice.databinding.ConfigureFuelProductOptionFragmentBinding
@@ -19,22 +20,9 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductListener {
 
-    private var listener: SelectFuelProductListener? = null
     private val viewModel: FuelViewModel by sharedViewModel()
 
     private lateinit var binding: ConfigureFuelProductOptionFragmentBinding
-
-    companion object {
-        fun newInstance() = ConfigureFuelProductOptionFragment()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        if (context is SelectFuelProductListener) {
-            listener = context
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,7 +60,7 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
     override fun selectProduct(product: FuelProductDisplayModel) {
         if (product.id != null && product.name != null) {
             viewModel.saveProduct(product.id!!, product.name!!)
-            listener?.selectProduct(product)
+            findNavController().navigate(R.id.action_configuration_fuel_product_to_list_stations)
         }
     }
 

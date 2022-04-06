@@ -51,6 +51,8 @@ dependencies {
     implementation "$dep.android.material"
     implementation "$dep.android.viewpager"
     implementation "$dep.android.splashScreen"
+    implementation "$dep.android.navigationFragment"
+    implementation "$dep.android.navigationUi"
 
     implementation "$dep.google.ads"
     implementation "$dep.google.location"

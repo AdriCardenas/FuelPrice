@@ -24,7 +24,7 @@ import com.engineblue.presentation.useCases.preferences.SaveBooleanImpl
 import com.engineblue.presentation.viewmodel.FuelViewModel
 import com.engineblue.presentation.viewmodel.ListStationsViewModel
 import com.engineblue.presentation.viewmodel.OnBoardingViewModel
-import com.engineblue.presentation.viewmodel.SplashViewModel
+import com.engineblue.presentation.viewmodel.RoutingViewModel
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -115,7 +115,7 @@ val mViewModels = module {
     }
 
     viewModel {
-        SplashViewModel(
+        RoutingViewModel(
             getSavedBoolean = get(),
             getSavedProduct = get()
         )
