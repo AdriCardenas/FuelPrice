@@ -50,6 +50,7 @@ dependencies {
     implementation "$dep.android.preferenceKtx"
     implementation "$dep.android.material"
     implementation "$dep.android.viewpager"
+    implementation "$dep.android.splashScreen"
 
     implementation "$dep.google.ads"
     implementation "$dep.google.location"
@@ -75,8 +76,6 @@ dependencies {
     androidTestImplementation "$dep.androidTest.rules"
 
     implementation "$dep.network.moshiKotlin"
-
-    implementation "androidx.core:core-splashscreen:1.0.0-beta01"
 
 }
 
