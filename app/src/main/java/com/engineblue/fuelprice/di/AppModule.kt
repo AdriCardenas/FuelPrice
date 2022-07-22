@@ -92,7 +92,7 @@ val mUseCaseModules = module {
 }
 
 val mNetworkModules = module {
-    single(named(name = RETROFIT_INSTANCE)) { createNetworkClient(BASE_URL) }
+    single(named(name = RETROFIT_INSTANCE)) { createNetworkClient(BASE_URL, androidContext()) }
     single<FuelApi> { get<Retrofit>(named(name = RETROFIT_INSTANCE)).create(FuelApi::class.java) }
 }
 

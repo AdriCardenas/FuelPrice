@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import com.engineblue.fuelprice.databinding.StationListFragmentBinding
 import com.engineblue.fuelprice.fragment.base.BaseFragment
 import com.engineblue.fuelprice.utils.showSnackbar
 import com.engineblue.fuelprice.utils.toast
+import com.engineblue.presentation.entity.StationDisplayModel
 import com.engineblue.presentation.viewmodel.ListStationsViewModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -39,10 +41,6 @@ class StationListFragment : BaseFragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     lateinit var binding: StationListFragmentBinding
-
-    companion object {
-        fun newInstance() = StationListFragment()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +100,7 @@ class StationListFragment : BaseFragment() {
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.recyclerView.layoutManager = layoutManager
 
-        val adapter = StationAdapter()
+        val adapter = StationAdapter(stationClickListener)
 
         binding.recyclerView.addItemDecoration(
             DividerItemDecoration(
@@ -159,6 +157,17 @@ class StationListFragment : BaseFragment() {
             .withErrorListener {
                 context?.toast(it.name)
             }.check()
+    }
+
+    private val stationClickListener = object : StationAdapter.ClickListener {
+        override fun onClick(station: StationDisplayModel) {
+            val gmmIntentUri =
+                Uri.parse("geo:${station.location?.latitude},${station.location?.longitude}?q=" + Uri.encode(station.name))
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            startActivity(mapIntent)
+        }
+
     }
 }
 

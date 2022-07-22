@@ -7,12 +7,16 @@ import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.engineblue.fuelprice.R
+import com.engineblue.fuelprice.adapter.fuel.StationAdapter
 import com.engineblue.fuelprice.adapter.viewholder.base.BaseViewHolder
 import com.engineblue.fuelprice.databinding.StationListItemBinding
 import com.engineblue.presentation.entity.StationDisplayModel
 import java.text.DecimalFormat
 
-class StationViewHolder(private val binding: StationListItemBinding) :
+class StationViewHolder(
+    private val binding: StationListItemBinding,
+    private val stationClickListener: StationAdapter.ClickListener
+) :
     BaseViewHolder<StationDisplayModel>(binding.root) {
 
     override fun bind(item: StationDisplayModel) {
@@ -52,11 +56,9 @@ class StationViewHolder(private val binding: StationListItemBinding) :
             else -> binding.priceStatus.visibility = View.GONE
         }
 
-//        listener?.let{
-//            itemView.setOnClickListener {
-//                listener.selectProduct( item)
-//            }
-//        }
+        itemView.setOnClickListener {
+            stationClickListener.onClick(item)
+        }
     }
 
     private fun formatDistance(distance: Float?): String {

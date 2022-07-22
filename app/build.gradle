@@ -7,13 +7,12 @@ apply plugin: 'kotlin-kapt'
 def dep = rootProject.ext
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 32
 
     defaultConfig {
         applicationId "com.adca.fuelprice"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -78,6 +77,10 @@ dependencies {
     androidTestImplementation "$dep.androidTest.rules"
 
     implementation "$dep.network.moshiKotlin"
+
+    // Chucker Inspector
+    debugImplementation "$dep.chucker.debug"
+    releaseImplementation "$dep.chucker.release"
 
 }
 
