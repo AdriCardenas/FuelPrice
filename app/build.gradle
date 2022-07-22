@@ -53,7 +53,7 @@ dependencies {
     implementation "$dep.android.navigationFragment"
     implementation "$dep.android.navigationUi"
 
-    implementation "$dep.google.ads"
+//    implementation "$dep.google.ads"
     implementation "$dep.google.location"
 
     implementation "$dep.dexter.core"

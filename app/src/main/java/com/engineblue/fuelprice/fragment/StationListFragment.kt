@@ -21,7 +21,6 @@ import com.engineblue.fuelprice.utils.showSnackbar
 import com.engineblue.fuelprice.utils.toast
 import com.engineblue.presentation.entity.StationDisplayModel
 import com.engineblue.presentation.viewmodel.ListStationsViewModel
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
@@ -80,8 +79,8 @@ class StationListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adRequest = AdRequest.Builder().build()
-        binding.adView.loadAd(adRequest)
+//        val adRequest = AdRequest.Builder().build()
+//        binding.adView.loadAd(adRequest)
 
         binding.toolbar.setOnMenuItemClickListener {
             if (it.itemId == R.id.setting_fragment) {

@@ -7,7 +7,6 @@ import androidx.navigation.fragment.NavHostFragment
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.databinding.MainActivityBinding
 import com.engineblue.presentation.viewmodel.RoutingViewModel
-import com.google.android.gms.ads.MobileAds
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity: AppCompatActivity() {
@@ -23,7 +22,7 @@ class MainActivity: AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        MobileAds.initialize(this)
+//        MobileAds.initialize(this)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host) as NavHostFragment
         val navController = navHostFragment.navController
