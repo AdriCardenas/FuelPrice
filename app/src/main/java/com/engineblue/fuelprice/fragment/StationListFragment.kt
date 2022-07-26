@@ -116,7 +116,6 @@ class StationListFragment : BaseFragment() {
         viewModel.stationList.observe(viewLifecycleOwner) { stations ->
             stations?.let {
                 adapter.submitList(it)
-                binding.loadingView.visibility = View.GONE
             }
         }
 
@@ -124,6 +123,10 @@ class StationListFragment : BaseFragment() {
             fuel?.let {
                 binding.toolbar.subtitle = fuel.name
             }
+        }
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner) {
+            binding.loadingView.visibility = if (it) View.VISIBLE else View.GONE
         }
     }
 
@@ -161,7 +164,11 @@ class StationListFragment : BaseFragment() {
     private val stationClickListener = object : StationAdapter.ClickListener {
         override fun onClick(station: StationDisplayModel) {
             val gmmIntentUri =
-                Uri.parse("geo:${station.location?.latitude},${station.location?.longitude}?q=" + Uri.encode(station.name))
+                Uri.parse(
+                    "geo:${station.location?.latitude},${station.location?.longitude}?q=" + Uri.encode(
+                        station.name
+                    )
+                )
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             startActivity(mapIntent)

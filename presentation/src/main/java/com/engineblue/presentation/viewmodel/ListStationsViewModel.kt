@@ -18,17 +18,20 @@ class ListStationsViewModel(
     ViewModel(), ViewModelScope by scope {
 
     val selectedFuel = MutableLiveData<FuelEntity>()
+    val loadingStatus = MutableLiveData<Boolean>()
 
     var latitude: Double? = null
     var longitude: Double? = null
 
-    val stationList =
-        MutableLiveData<List<StationDisplayModel>>()
+    val stationList = MutableLiveData<List<StationDisplayModel>>()
 
     private fun getSavedProduct(): FuelEntity = getSavedProduct.getSavedProduct()
 
     fun loadStations() {
         launch {
+            loadingStatus.postValue(true)
+            stationList.postValue(listOf())
+
             val productSelected = getSavedProduct()
 
             productSelected.id?.let { productId ->
@@ -50,6 +53,8 @@ class ListStationsViewModel(
                     })
                 }
             }
+
+            loadingStatus.postValue(false)
         }
     }
 

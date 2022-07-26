@@ -37,5 +37,8 @@ data class StationDisplayModel(
         other is StationDisplayModel && id == other.id
 
     override fun areContentsTheSame(other: StationItemFuelDisplayModel) =
-        other == this
+        other is StationDisplayModel && other == this
+                && other.price != this.price
+                && other.priceStatus == this.priceStatus
+                && other.address == this.address
 }
