@@ -6,8 +6,11 @@ import androidx.lifecycle.ViewModel
 import com.engineblue.domain.entity.FuelEntity
 import com.engineblue.domain.useCasesContract.GetRemoteStations
 import com.engineblue.domain.useCasesContract.preferences.GetSavedProduct
+import com.engineblue.presentation.entity.ListStationsState
 import com.engineblue.presentation.entity.StationDisplayModel
 import com.engineblue.presentation.mapper.transformStationList
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ListStationsViewModel(
@@ -17,44 +20,52 @@ class ListStationsViewModel(
 ) :
     ViewModel(), ViewModelScope by scope {
 
-    val selectedFuel = MutableLiveData<FuelEntity>()
-    val loadingStatus = MutableLiveData<Boolean>()
 
-    var latitude: Double? = null
-    var longitude: Double? = null
+    // Backing property to avoid state updates from other classes
+    private val _uiState = MutableStateFlow(ListStationsState())
+    // The UI collects from this StateFlow to get its state updates
+    val uiState: StateFlow<ListStationsState> = _uiState
 
-    val stationList = MutableLiveData<List<StationDisplayModel>>()
+    private var latitude: Double? = null
+    private var longitude: Double? = null
 
     private fun getSavedProduct(): FuelEntity = getSavedProduct.getSavedProduct()
 
     fun loadStations() {
         launch {
-            loadingStatus.postValue(true)
-            stationList.postValue(listOf())
+            _uiState.value = uiState.value.copy(
+                loading = true,
+                items = emptyList()
+            )
 
             val productSelected = getSavedProduct()
+            var items = emptyList<StationDisplayModel>()
 
-            productSelected.id?.let { productId ->
-                selectedFuel.postValue(productSelected)
+            if (productSelected.id != null) {
+                val remoteStations = getRemoteStations.getListRemoteStations(productSelected.id!!)
 
-                getRemoteStations.getListRemoteStations(productId).let { result ->
-                    stationList.postValue(if (latitude != null && longitude != null) {
-                        val currentPosition = Location("Current Position")
+                items = if (latitude != null && longitude != null) {
+                    val currentPosition = Location("Current Position")
 
-                        currentPosition.latitude = latitude!!
-                        currentPosition.longitude = longitude!!
+                    currentPosition.latitude = latitude!!
+                    currentPosition.longitude = longitude!!
 
-                        val list = transformStationList(result, currentPosition)
-                        val orderedList = list.sortedBy { it.distance }
+                    val list = transformStationList(remoteStations, currentPosition)
+                    val orderedList = list.sortedBy { it.distance }
 
-                        setPricesColors(orderedList)
-                    } else {
-                        setPricesColors(transformStationList(result, null))
-                    })
+                    setPricesColors(orderedList)
+                } else {
+                    setPricesColors(transformStationList(remoteStations, null))
                 }
+
+
             }
 
-            loadingStatus.postValue(false)
+            _uiState.value = uiState.value.copy(
+                loading = false,
+                items = items,
+                selectedFuel = productSelected
+            )
         }
     }
 
@@ -82,6 +93,11 @@ class ListStationsViewModel(
     override fun onCleared() {
         super.onCleared()
         job.cancel()
+    }
+
+    fun setLocation(latitude: Double?, longitude: Double?) {
+        this.latitude = latitude
+        this.longitude = longitude
     }
 
 }

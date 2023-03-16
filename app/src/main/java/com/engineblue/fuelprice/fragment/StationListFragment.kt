@@ -9,6 +9,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +32,9 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 
@@ -66,10 +72,8 @@ class StationListFragment : BaseFragment() {
             }.addOnCompleteListener {
                 if (it.isSuccessful) {
                     this.location = it.result
+                    viewModel.setLocation(location?.latitude, location?.longitude)
                     viewModel.loadStations()
-
-                    viewModel.latitude = location?.latitude
-                    viewModel.longitude = location?.longitude
                 } else {
                     viewModel.loadStations()
                 }
@@ -90,7 +94,18 @@ class StationListFragment : BaseFragment() {
         }
 
         val adapter = initializeRecycler()
-        subscribeToViewModel(adapter)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.CREATED) {
+                viewModel.uiState.collectLatest { uiState ->
+                    adapter.submitList(uiState.items)
+                    binding.loadingView.visibility =
+                        if (uiState.loading) View.VISIBLE else View.GONE
+                    if (uiState.selectedFuel.name != null)
+                        binding.toolbar.subtitle = uiState.selectedFuel.name
+                }
+            }
+        }
 
         checkLocationPermission()
     }
@@ -110,24 +125,6 @@ class StationListFragment : BaseFragment() {
 
         binding.recyclerView.adapter = adapter
         return adapter
-    }
-
-    private fun subscribeToViewModel(adapter: StationAdapter) {
-        viewModel.stationList.observe(viewLifecycleOwner) { stations ->
-            stations?.let {
-                adapter.submitList(it)
-            }
-        }
-
-        viewModel.selectedFuel.observe(viewLifecycleOwner) { fuel ->
-            fuel?.let {
-                binding.toolbar.subtitle = fuel.name
-            }
-        }
-
-        viewModel.loadingStatus.observe(viewLifecycleOwner) {
-            binding.loadingView.visibility = if (it) View.VISIBLE else View.GONE
-        }
     }
 
     private fun checkLocationPermission() {
