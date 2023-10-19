@@ -4,11 +4,17 @@ import androidx.lifecycle.ViewModel
 import com.engineblue.domain.entity.FuelEntity
 import com.engineblue.domain.useCasesContract.preferences.GetSavedBoolean
 import com.engineblue.domain.useCasesContract.preferences.GetSavedProduct
+import com.engineblue.domain.useCasesContract.preferences.SaveBoolean
 
 class RoutingViewModel(
     private val getSavedBoolean: GetSavedBoolean,
+    private val saveBooleanPreference: SaveBoolean,
     private val getSavedProduct: GetSavedProduct
 ) : ViewModel() {
     fun getPreferencesFirstStart(key:String) : Boolean = !getSavedBoolean.getSavedBoolean(key)
     fun getSelectedFuel() : FuelEntity = getSavedProduct.getSavedProduct()
+
+    fun finishOnBoarding(key: String) {
+        saveBooleanPreference.saveBoolean(key, true)
+    }
 }
