@@ -7,16 +7,20 @@ apply plugin: 'kotlin-kapt'
 def dep = rootProject.ext
 
 android {
-    compileSdkVersion 33
+    namespace = "com.engineblue.fuelprice"
+    compileSdk = 34
 
     defaultConfig {
-        applicationId "com.adca.fuelprice"
+        applicationId "com.engineblue.fuelprice"
         minSdkVersion 23
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
@@ -31,8 +35,20 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     viewBinding {
         enabled = true
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
 }
 
@@ -82,6 +98,19 @@ dependencies {
     debugImplementation "$dep.chucker.debug"
     releaseImplementation "$dep.chucker.release"
 
+    // Jetpack Compose
+    implementation platform("$dep.android.compose")
+
+    // Material Design 3
+    implementation("$dep.android.material3")
+
+    // Navigation
+    implementation("$dep.android.navigationCompose")
+
+    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
 }
 
 sourceCompatibility = "1.8"

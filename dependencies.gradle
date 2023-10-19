@@ -35,8 +35,9 @@ ext {
             dexter                 : "6.2.3",
             annotation             : "1.3.0",
             splashScreen           : "1.0.0-rc01",
-            navigation             : "2.5.0",
+            navigation             : "2.5.3",
             chucker                : "3.5.2",
+            compose                : "2023.04.01",
     ]
 
     android = [
@@ -53,6 +54,9 @@ ext {
             splashScreen         : "androidx.core:core-splashscreen:$versions.splashScreen",
             navigationFragment   : "androidx.navigation:navigation-fragment-ktx:$versions.navigation",
             navigationUi         : "androidx.navigation:navigation-ui-ktx:$versions.navigation",
+            compose              : "androidx.compose:compose-bom:$versions.compose",
+            material3            : "androidx.compose.material3:material3",
+            navigationCompose    : "androidx.navigation:navigation-compose:$versions.navigation",
     ]
 
     google = [
