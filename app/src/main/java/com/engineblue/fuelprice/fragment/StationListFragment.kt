@@ -170,7 +170,6 @@ class StationListFragment : BaseFragment() {
             mapIntent.setPackage("com.google.android.apps.maps")
             startActivity(mapIntent)
         }
-
     }
 }
 

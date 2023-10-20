@@ -33,11 +33,11 @@ class ListStationsViewModel(
 
     fun loadStations() {
         launch {
-            _uiState.value = uiState.value.copy(
+                val model = uiState.value.copy(
                 loading = true,
                 items = emptyList()
             )
-
+            _uiState.value =model
             val productSelected = getSavedProduct()
             var items = emptyList<StationDisplayModel>()
 
@@ -61,11 +61,12 @@ class ListStationsViewModel(
 
             }
 
-            _uiState.value = uiState.value.copy(
+            val model2 = uiState.value.copy(
                 loading = false,
                 items = items,
                 selectedFuel = productSelected
             )
+            _uiState.value = model2
         }
     }
 

@@ -1,15 +1,13 @@
 package com.engineblue.fuelprice.screen
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
-import android.location.Location
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,63 +29,55 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.core.components.FuelTopAppBar
 import com.engineblue.fuelprice.core.ui.colorCheap
 import com.engineblue.fuelprice.core.ui.colorExpensive
 import com.engineblue.fuelprice.core.ui.colorRegular
+import com.engineblue.presentation.entity.ListStationsState
 import com.engineblue.presentation.entity.StationDisplayModel
 import com.engineblue.presentation.viewmodel.ListStationsViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
 import org.koin.androidx.compose.get
 import java.text.DecimalFormat
 
-@SuppressLint("MissingPermission")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    fusedLocationClient: FusedLocationProviderClient,
+    viewModel: ListStationsViewModel,
     onBackPressed: () -> Unit
 ) {
-    val viewModel: ListStationsViewModel = get()
-
-    val uiState = viewModel.uiState.collectAsState()
-
-    var savedLocation: Location? = null
-
-    fusedLocationClient.lastLocation
-        .addOnSuccessListener { location: Location? ->
-            savedLocation = location
-        }.addOnCompleteListener {
-            if (it.isSuccessful) {
-                savedLocation = it.result
-                viewModel.setLocation(savedLocation?.latitude, savedLocation?.longitude)
-                viewModel.loadStations()
-            } else {
-                viewModel.loadStations()
-            }
-        }
+    val uiState = viewModel.uiState.collectAsState().value
 
     Scaffold(
         topBar = { FuelTopAppBar(stringResource(R.string.fuel_price_title)) { onBackPressed() } },
         content = { padding ->
-            LazyColumn(
-                modifier.padding(padding),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp)
-            ) {
-                items(uiState.value.items, itemContent = {
-                    StationItem(it)
-                })
+            if (uiState.loading) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(padding)
+                        .fillMaxSize()
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                LazyColumn(
+                    modifier.padding(padding),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(uiState.items, itemContent = {
+                        StationItem(it)
+                    })
+                }
             }
         }
     )
 }
+
 
 @Composable
 fun StationItem(station: StationDisplayModel) {
@@ -114,7 +105,10 @@ fun StationItem(station: StationDisplayModel) {
                         Box(
                             modifier = Modifier
                                 .size(48.dp, height = 4.dp)
-                                .background(color = priceColor, shape = RoundedCornerShape(4.dp))
+                                .background(
+                                    color = priceColor,
+                                    shape = RoundedCornerShape(4.dp)
+                                )
                         )
                 }
             }
