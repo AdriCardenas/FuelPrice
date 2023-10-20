@@ -22,14 +22,14 @@ fun FuelTopAppBar(title: String, onClick: () -> Unit) {
             )
         },
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.background),
-        navigationIcon = {
-            IconButton(onClick = onClick) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Go back",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
+//        navigationIcon = {
+//            IconButton(onClick = onClick) {
+//                Icon(
+//                    imageVector = Icons.Filled.ArrowBack,
+//                    contentDescription = "Go back",
+//                    tint = MaterialTheme.colorScheme.primary
+//                )
+//            }
+//        }
     )
 }
