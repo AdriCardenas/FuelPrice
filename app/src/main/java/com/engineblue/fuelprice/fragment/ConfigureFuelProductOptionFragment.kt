@@ -50,11 +50,11 @@ class ConfigureFuelProductOptionFragment : BaseFragment(), SelectFuelProductList
         )
 
         binding.recyclerView.adapter = adapter
-        viewModel.fuelProductList.observe(viewLifecycleOwner) { products ->
-            products?.let { adapter.submitList(it) }
-        }
+//        viewModel.fuelProductList(viewLifecycleOwner) { products ->
+//            products?.let { adapter.submitList(it) }
+//        }
 
-        viewModel.loadProducts()
+//        viewModel.loadProducts()
     }
 
     override fun selectProduct(product: FuelProductDisplayModel) {

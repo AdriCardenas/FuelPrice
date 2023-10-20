@@ -6,8 +6,8 @@ sealed class ListItemFuelProductDisplayModel {
 }
 
 data class FuelProductDisplayModel(
-    val id: String? = null,
-    val name: String? = null,
+    val id: String,
+    val name: String,
     val nameAbbreviature: String? = null
 ) : ListItemFuelProductDisplayModel() {
 

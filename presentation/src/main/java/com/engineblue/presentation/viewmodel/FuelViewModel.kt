@@ -1,10 +1,12 @@
 package com.engineblue.presentation.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.engineblue.domain.useCasesContract.GetRemoteProducts
 import com.engineblue.domain.useCasesContract.preferences.SaveProductSelected
 import com.engineblue.presentation.entity.FuelProductDisplayModel
+import com.engineblue.presentation.mapper.transformFuelList
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class FuelViewModel
@@ -17,21 +19,18 @@ class FuelViewModel
 
     private val filteredListFuelForCars = listOf("1", "20", "3", "4", "5", "6", "17", "18")
 
-    val fuelProductList =
-        MutableLiveData<List<FuelProductDisplayModel>>()
+    private val _fuelProductList = MutableStateFlow<List<FuelProductDisplayModel>>(emptyList())
+    val fuelProductList: StateFlow<List<FuelProductDisplayModel>> = _fuelProductList
 
-    fun loadProducts() {
+    init {
+        loadProducts()
+    }
+
+    private fun loadProducts() {
         launch {
             getRemoteProducts.getListRemoteFuels().let { result ->
-                fuelProductList.postValue(
-                    result.map {
-                        FuelProductDisplayModel(
-                            it.id,
-                            it.name,
-                            it.nameAbbreviature
-                        )
-                    }.toList().filter { filteredListFuelForCars.contains(it.id) }
-                )
+                _fuelProductList.value =
+                    transformFuelList(result).filter { filteredListFuelForCars.contains(it.id) }
             }
         }
     }

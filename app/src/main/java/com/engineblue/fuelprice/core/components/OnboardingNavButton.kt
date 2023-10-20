@@ -20,7 +20,7 @@ fun OnBoardNavButton(
             if (currentPage < noOfPages - 1) {
                 onNextClicked()
             } else {
-                // Handle onboarding completion
+                onStartClicked()
             }
         }, modifier = modifier
     ) {

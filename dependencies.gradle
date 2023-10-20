@@ -104,6 +104,7 @@ ext {
 
     koin = [
             core        : "io.insert-koin:koin-android:$versions.koin",
+            compose     : "io.insert-koin:koin-androidx-compose:$versions.koin",
     ]
 
     okhttp = [

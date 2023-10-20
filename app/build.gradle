@@ -78,6 +78,7 @@ dependencies {
     implementation "$dep.kotlin.ktx"
 
     implementation "$dep.koin.core"
+    implementation "$dep.koin.compose"
 
     implementation "$dep.coroutines.core"
     implementation "$dep.coroutines.android"

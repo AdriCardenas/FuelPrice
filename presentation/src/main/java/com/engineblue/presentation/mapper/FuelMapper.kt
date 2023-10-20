@@ -7,8 +7,8 @@ import com.engineblue.presentation.entity.FuelProductDisplayModel
 fun transformFuelList(results: List<FuelEntity>?): List<FuelProductDisplayModel> {
     return results?.map {
         FuelProductDisplayModel(
-            it.id,
-            it.name,
+            it.id ?: "",
+            it.name ?: "",
             it.nameAbbreviature
         )
     } ?: emptyList()

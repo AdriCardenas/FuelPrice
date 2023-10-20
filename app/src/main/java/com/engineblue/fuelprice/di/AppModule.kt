@@ -117,8 +117,7 @@ val mViewModels = module {
     viewModel {
         RoutingViewModel(
             getSavedBoolean = get(),
-            getSavedProduct = get(),
-            saveBooleanPreference = get()
+            getSavedProduct = get()
         )
     }
 }

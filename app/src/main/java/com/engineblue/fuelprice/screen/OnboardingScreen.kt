@@ -28,12 +28,16 @@ import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.core.components.OnBoardNavButton
 import com.engineblue.fuelprice.core.components.OnboardingItem
 import com.engineblue.presentation.entity.OnBoardingItemDisplayModel
+import com.engineblue.presentation.viewmodel.OnBoardingViewModel
+import org.koin.androidx.compose.get
 
 
 @Composable
-fun OnBoardingScreen(
-    onFinishOnBoarding: () -> Unit
+fun OnboardingScreen(
+    onFinishOnBoarding: () -> Unit,
 ) {
+    val viewModel: OnBoardingViewModel = get()
+
     val onboardPagesList = arrayListOf<OnBoardingItemDisplayModel>()
 
     onboardPagesList.add(
@@ -62,6 +66,8 @@ fun OnBoardingScreen(
 
     val currentPage = remember { mutableStateOf(0) }
 
+    val prefFirstStart = stringResource(R.string.pref_first_start)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,19 +81,26 @@ fun OnBoardingScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.size(16.dp))
-            IconButton(onClick = { if (currentPage.value > 0) currentPage.value-- }) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    stringResource(id = R.string.go_back),
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-            }
+            if (currentPage.value > 0)
+                IconButton(onClick = { if (currentPage.value > 0) currentPage.value-- }) {
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        stringResource(id = R.string.go_back),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             Box(modifier = Modifier.weight(1f))
             TextButton(
                 modifier = Modifier.padding(16.dp),
-                onClick = onFinishOnBoarding,
+                onClick = {
+                    viewModel.saveOnboardingChecked(prefFirstStart)
+                    onFinishOnBoarding()
+                },
             ) {
-                Text(text = stringResource(R.string.skip), style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = stringResource(R.string.skip),
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
         }
 
@@ -107,7 +120,10 @@ fun OnBoardingScreen(
             onNextClicked = {
                 currentPage.value++
             },
-            onStartClicked = onFinishOnBoarding
+            onStartClicked = {
+                viewModel.saveOnboardingChecked(prefFirstStart)
+                onFinishOnBoarding()
+            }
         )
 
     }
