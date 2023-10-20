@@ -33,7 +33,7 @@ import org.koin.androidx.compose.get
 
 
 @Composable
-fun OnboardingScreen(
+fun OnBoardingScreen(
     onFinishOnBoarding: () -> Unit,
 ) {
     val viewModel: OnBoardingViewModel = get()

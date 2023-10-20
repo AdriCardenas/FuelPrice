@@ -12,13 +12,17 @@ import com.engineblue.fuelprice.R
 import com.engineblue.fuelprice.core.ui.AppTheme
 import com.engineblue.fuelprice.screen.ConfigurationFuelScreen
 import com.engineblue.fuelprice.screen.HomeScreen
-import com.engineblue.fuelprice.screen.OnboardingScreen
+import com.engineblue.fuelprice.screen.OnBoardingScreen
 import com.engineblue.presentation.viewmodel.RoutingViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeActivity : AppCompatActivity() {
 
     private val viewModel: RoutingViewModel by viewModel()
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -36,7 +40,7 @@ class HomeActivity : AppCompatActivity() {
                     startDestination = startDestination
                 ) {
                     composable("onboarding") {
-                        OnboardingScreen {
+                        OnBoardingScreen {
                             navController.navigate("configuration_fuel") {
                                 popUpTo("configuration_fuel")
                             }
@@ -50,7 +54,8 @@ class HomeActivity : AppCompatActivity() {
                         }
                     }
                     composable("home") {
-                        HomeScreen { onBackPressedDispatcher.onBackPressed() }
+                        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@HomeActivity)
+                        HomeScreen(fusedLocationClient = fusedLocationClient) { onBackPressedDispatcher.onBackPressed() }
                     }
                 }
             }
