@@ -23,6 +23,7 @@ class ListStationsViewModel(
 
     // Backing property to avoid state updates from other classes
     private val _uiState = MutableStateFlow(ListStationsState())
+
     // The UI collects from this StateFlow to get its state updates
     val uiState: StateFlow<ListStationsState> = _uiState
 
@@ -33,19 +34,21 @@ class ListStationsViewModel(
 
     fun loadStations() {
         launch {
-                val model = uiState.value.copy(
+            val model = uiState.value.copy(
                 loading = true,
                 items = emptyList()
             )
-            _uiState.value =model
+            _uiState.value = model
             val productSelected = getSavedProduct()
             var items = emptyList<StationDisplayModel>()
 
-            if (productSelected.id != null) {
+            val currentPosition = Location("Current Position")
+
+            if (productSelected.id != null
+                && (productSelected.id != _uiState.value.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)) {
                 val remoteStations = getRemoteStations.getListRemoteStations(productSelected.id!!)
 
                 items = if (latitude != null && longitude != null) {
-                    val currentPosition = Location("Current Position")
 
                     currentPosition.latitude = latitude!!
                     currentPosition.longitude = longitude!!
@@ -57,8 +60,6 @@ class ListStationsViewModel(
                 } else {
                     setPricesColors(transformStationList(remoteStations, null))
                 }
-
-
             }
 
             val model2 = uiState.value.copy(

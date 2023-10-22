@@ -37,6 +37,7 @@ class HomeActivity : AppCompatActivity() {
 
     private var location: Location? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var firstLoad = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -70,8 +71,16 @@ class HomeActivity : AppCompatActivity() {
                         }
                     }
                     composable("home") {
-                        checkLocationPermission()
-                        HomeScreen(viewModel = stationViewModel) { onBackPressedDispatcher.onBackPressed() }
+                        if(firstLoad){
+                            checkLocationPermission()
+                            firstLoad = false
+                        }
+                        HomeScreen(viewModel = stationViewModel) {
+                            navController.navigate("configuration_fuel") {
+                                popUpTo("home")
+                            }
+                        }
+//                        { onBackPressedDispatcher.onBackPressed() }
                     }
                 }
             }
@@ -111,11 +120,8 @@ class HomeActivity : AppCompatActivity() {
 
     @SuppressLint("MissingPermission")
     private fun getCurrentLocation() {
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 this.location = location
-
-
             }.addOnCompleteListener {
                 if (it.isSuccessful) {
                     this.location = it.result

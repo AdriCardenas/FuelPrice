@@ -1,6 +1,5 @@
 package com.engineblue.fuelprice.screen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,10 +35,8 @@ import com.engineblue.fuelprice.core.components.FuelTopAppBar
 import com.engineblue.fuelprice.core.ui.colorCheap
 import com.engineblue.fuelprice.core.ui.colorExpensive
 import com.engineblue.fuelprice.core.ui.colorRegular
-import com.engineblue.presentation.entity.ListStationsState
 import com.engineblue.presentation.entity.StationDisplayModel
 import com.engineblue.presentation.viewmodel.ListStationsViewModel
-import org.koin.androidx.compose.get
 import java.text.DecimalFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,12 +44,17 @@ import java.text.DecimalFormat
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: ListStationsViewModel,
-    onBackPressed: () -> Unit
+    onSettingClicked: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
 
     Scaffold(
-        topBar = { FuelTopAppBar(stringResource(R.string.fuel_price_title)) { onBackPressed() } },
+        topBar = {
+            FuelTopAppBar(
+                stringResource(R.string.fuel_price_title),
+                uiState.selectedFuel.name ?: ""
+            ) { onSettingClicked() }
+        },
         content = { padding ->
             if (uiState.loading) {
                 Box(
@@ -96,7 +98,12 @@ fun StationItem(station: StationDisplayModel) {
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        modifier = Modifier.padding(
+                            start = 12.dp,
+                            end = 12.dp,
+                            top = 12.dp,
+                            bottom = 8.dp
+                        ),
                         text = "${station.price}€/L",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -104,15 +111,16 @@ fun StationItem(station: StationDisplayModel) {
                     if (station.priceStatus != StationDisplayModel.PriceStatus.UNASSIGNED)
                         Box(
                             modifier = Modifier
-                                .size(48.dp, height = 4.dp)
+                                .size(48.dp, height = 6.dp)
                                 .background(
                                     color = priceColor,
-                                    shape = RoundedCornerShape(4.dp)
+                                    shape = RoundedCornerShape(12.dp)
                                 )
                         )
                 }
             }
             Text(
+                modifier = Modifier.padding(top = 4.dp),
                 text = "${formatDistance(distance = station.distance?.div(1000))} km"
             )
         }
