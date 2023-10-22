@@ -5,11 +5,11 @@ apply plugin: 'kotlin-kapt'
 def dep = rootProject.ext
 
 android {
-    compileSdkVersion 31
+    compileSdk = 34
 
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -21,7 +21,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'com.engineblue.presentation'
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
 }
 
 dependencies {
@@ -41,6 +46,3 @@ dependencies {
     implementation "$dep.android.datastoreCore"
 
 }
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
