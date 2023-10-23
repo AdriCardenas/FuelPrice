@@ -1,6 +1,7 @@
 package com.engineblue.fuelprice.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -72,7 +73,7 @@ fun HomeScreen(
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(uiState.items, itemContent = {
-                        StationItem(it)
+                        StationItem(it) { item -> viewModel.loadHistoric(item) }
                     })
                 }
             }
@@ -82,68 +83,72 @@ fun HomeScreen(
 
 
 @Composable
-fun StationItem(station: StationDisplayModel) {
+fun StationItem(station: StationDisplayModel, onClickItem: (StationDisplayModel) -> Unit) {
     val priceColor = when (station.priceStatus) {
         StationDisplayModel.PriceStatus.CHEAP -> colorCheap
         StationDisplayModel.PriceStatus.EXPENSIVE -> colorExpensive
         else -> colorRegular
     }
 
-    Row {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                ),
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        modifier = Modifier.padding(
-                            start = 12.dp,
-                            end = 12.dp,
-                            top = 12.dp,
-                            bottom = 8.dp
-                        ),
-                        text = "${station.price}€/L",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    if (station.priceStatus != StationDisplayModel.PriceStatus.UNASSIGNED)
-                        Box(
-                            modifier = Modifier
-                                .size(48.dp, height = 6.dp)
-                                .background(
-                                    color = priceColor,
-                                    shape = RoundedCornerShape(12.dp)
-                                )
+    Box(modifier = Modifier.clickable {
+        onClickItem(station)
+    }) {
+        Row {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            modifier = Modifier.padding(
+                                start = 12.dp,
+                                end = 12.dp,
+                                top = 12.dp,
+                                bottom = 8.dp
+                            ),
+                            text = "${station.price}€/L",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                }
-            }
-            Text(
-                modifier = Modifier.padding(top = 4.dp),
-                text = "${formatDistance(distance = station.distance?.div(1000))} km"
-            )
-        }
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 16.dp)
-        ) {
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(station.name)
+                        if (station.priceStatus != StationDisplayModel.PriceStatus.UNASSIGNED)
+                            Box(
+                                modifier = Modifier
+                                    .size(48.dp, height = 6.dp)
+                                    .background(
+                                        color = priceColor,
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                            )
                     }
-                    if (station.city != null)
-                        append(" - " + station.city)
-                },
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = station.address ?: "",
-                style = MaterialTheme.typography.bodyMedium
-            )
+                }
+                Text(
+                    modifier = Modifier.padding(top = 4.dp),
+                    text = "${formatDistance(distance = station.distance?.div(1000))} km"
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append(station.name)
+                        }
+                        if (station.city != null)
+                            append(" - " + station.city)
+                    },
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = station.address ?: "",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }

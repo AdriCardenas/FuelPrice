@@ -31,6 +31,7 @@ fun transformStationList(
             it.zipCode,
             it.address,
             it.city,
+            it.cityId,
             it.province
         )
     } ?: emptyList()

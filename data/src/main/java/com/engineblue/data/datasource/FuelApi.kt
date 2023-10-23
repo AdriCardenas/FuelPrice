@@ -18,4 +18,12 @@ interface FuelApi {
     @WorkerThread
     @GET("EstacionesTerrestres/FiltroProducto/{id}")
     suspend fun getStationsByProduct(@Path("id") id: String): Response<StationWrapperResponse>
+
+    @WorkerThread
+    @GET("EstacionesTerrestresHist/FiltroMunicipioProducto/{fecha}/{idMunicipio}/{idProducto}")
+    suspend fun getHistoricByDateCityAndProduct(
+        @Path("fecha") fecha: String,
+        @Path("idMunicipio") idMunicipio: String,
+        @Path("idProducto") idProducto: String,
+    ): Response<StationWrapperResponse>
 }

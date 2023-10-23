@@ -1,9 +1,10 @@
 package com.engineblue.presentation.viewmodel
 
 import android.location.Location
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.engineblue.domain.entity.FuelEntity
+import com.engineblue.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct
 import com.engineblue.domain.useCasesContract.GetRemoteStations
 import com.engineblue.domain.useCasesContract.preferences.GetSavedProduct
 import com.engineblue.presentation.entity.ListStationsState
@@ -12,9 +13,14 @@ import com.engineblue.presentation.mapper.transformStationList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class ListStationsViewModel(
     private val getRemoteStations: GetRemoteStations,
+    private val getRemoteHistoricByDateCityAndProduct: GetRemoteHistoricByDateCityAndProduct,
     private val getSavedProduct: GetSavedProduct,
     scope: ViewModelScope = viewModelScope()
 ) :
@@ -45,7 +51,8 @@ class ListStationsViewModel(
             val currentPosition = Location("Current Position")
 
             if (productSelected.id != null
-                && (productSelected.id != _uiState.value.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)) {
+                && (productSelected.id != _uiState.value.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)
+            ) {
                 val remoteStations = getRemoteStations.getListRemoteStations(productSelected.id!!)
 
                 items = if (latitude != null && longitude != null) {
@@ -100,6 +107,30 @@ class ListStationsViewModel(
     fun setLocation(latitude: Double?, longitude: Double?) {
         this.latitude = latitude
         this.longitude = longitude
+    }
+
+    fun loadHistoric(item: StationDisplayModel) {
+        launch {
+            val calendar = Calendar.getInstance()
+
+            calendar[Calendar.DAY_OF_MONTH] = calendar[Calendar.DAY_OF_MONTH] - 1
+
+            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+
+            val product = getSavedProduct()
+
+            if (item.cityId != null && product.id != null) {
+                val list = getRemoteHistoricByDateCityAndProduct(
+                    simpleDateFormat.format(calendar.time),
+                    item.cityId,
+                    product.id!!
+                )
+
+                list.forEach {
+                    Log.d("Encontrado", it.toString())
+                }
+            }
+        }
     }
 
 }

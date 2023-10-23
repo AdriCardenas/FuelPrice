@@ -18,6 +18,7 @@ fun transformStationList(list: List<Station>?, logger: Logger): List<StationEnti
             element.zipCode,
             element.direction,
             element.city,
+            element.cityId,
             element.province
         )
     } ?: listOf()

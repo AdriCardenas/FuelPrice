@@ -33,10 +33,10 @@ private fun httpClient(context: Context): OkHttpClient {
     if (BuildConfig.DEBUG) {
         val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
 
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.HEADERS
-        clientBuilder.addInterceptor(httpLoggingInterceptor)
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        clientBuilder.addInterceptor(provideChuckerInterceptor(context))
+            .addInterceptor(httpLoggingInterceptor)
 
-            .addInterceptor(provideChuckerInterceptor(context))
     }
 
     clientBuilder.readTimeout(30, TimeUnit.SECONDS)

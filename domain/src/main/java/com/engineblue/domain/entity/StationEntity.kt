@@ -14,5 +14,6 @@ data class StationEntity(
     val zipCode: String? = null,
     val address: String? = null,
     val city: String? = null,
+    val cityId: String? = null,
     val province: String? = null
 )

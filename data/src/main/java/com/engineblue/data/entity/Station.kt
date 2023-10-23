@@ -16,5 +16,6 @@ data class Station(
     @Json(name ="C.P.") val zipCode: String? = null,
     @Json(name ="Dirección") val direction: String? = null,
     @Json(name ="Municipio") val city: String? = null,
+    @Json(name ="IDMunicipio") val cityId: String? = null,
     @Json(name ="Provincia") val province: String? = null
 )

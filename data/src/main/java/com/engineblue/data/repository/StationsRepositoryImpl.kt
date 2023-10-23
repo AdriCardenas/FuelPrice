@@ -21,5 +21,19 @@ class StationsRepositoryImpl(
         return transformStationList(result.stations, logger)
     }
 
+    override suspend fun getHistoricByDateCityAndProduct(
+        date: String,
+        idCity: String,
+        idProduct: String
+    ): List<StationEntity> {
+        val result: StationWrapperResponse = safeApiCall(
+            call = { api.getHistoricByDateCityAndProduct(date, idCity, idProduct) },
+            errorMessage = "Error getting stations with id: $idProduct"
+        )
+            ?: return listOf()
+
+        return transformStationList(result.stations, logger)
+    }
+
     override fun getRepositoryName(): String = "StationsRepository"
 }

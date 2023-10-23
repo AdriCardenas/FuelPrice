@@ -71,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
                         }
                     }
                     composable("home") {
-                        if(firstLoad){
+                        if (firstLoad) {
                             checkLocationPermission()
                             firstLoad = false
                         }
@@ -121,16 +121,16 @@ class HomeActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun getCurrentLocation() {
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                this.location = location
-            }.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    this.location = it.result
-                    stationViewModel.setLocation(location?.latitude, location?.longitude)
-                    stationViewModel.loadStations()
-                } else {
-                    stationViewModel.loadStations()
-                }
+            this.location = location
+        }.addOnCompleteListener {
+            if (it.isSuccessful) {
+                this.location = it.result
+                stationViewModel.setLocation(location?.latitude, location?.longitude)
+                stationViewModel.loadStations()
+            } else {
+                stationViewModel.loadStations()
             }
+        }
     }
 
     @Composable

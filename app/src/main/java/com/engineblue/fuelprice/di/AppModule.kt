@@ -8,6 +8,7 @@ import com.engineblue.data.repository.StationsRepositoryImpl
 import com.engineblue.domain.repository.FuelRepository
 import com.engineblue.domain.repository.SettingRepository
 import com.engineblue.domain.repository.StationsRepository
+import com.engineblue.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct
 import com.engineblue.domain.useCasesContract.GetRemoteProducts
 import com.engineblue.domain.useCasesContract.GetRemoteStations
 import com.engineblue.domain.useCasesContract.SaveLocationSelected
@@ -61,6 +62,13 @@ val mUseCaseModules = module {
         )
     }
 
+    factory<GetRemoteHistoricByDateCityAndProduct> {
+        GetRemoteHistoricByDateCityAndProductImpl(
+            repository = get(),
+            dispatcher = Dispatchers.IO
+        )
+    }
+
     factory<SaveProductSelected> {
         SaveProductSelectedImpl(
             repository = get()
@@ -104,7 +112,8 @@ val mViewModels = module {
     viewModel {
         ListStationsViewModel(
             getRemoteStations = get(),
-            getSavedProduct = get()
+            getSavedProduct = get(),
+            getRemoteHistoricByDateCityAndProduct = get()
         )
     }
 
