@@ -23,6 +23,7 @@ data class StationDisplayModel(
     val city: String? = null,
     val cityId: String? = null,
     val province: String? = null,
+    var historic: List<HistoricStation> = listOf(),
 
     var priceStatus: PriceStatus = PriceStatus.UNASSIGNED
 ) : StationItemFuelDisplayModel() {

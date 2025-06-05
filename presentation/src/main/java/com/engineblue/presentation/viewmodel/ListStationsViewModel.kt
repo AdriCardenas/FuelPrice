@@ -7,15 +7,19 @@ import com.engineblue.domain.entity.FuelEntity
 import com.engineblue.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct
 import com.engineblue.domain.useCasesContract.GetRemoteStations
 import com.engineblue.domain.useCasesContract.preferences.GetSavedProduct
+import com.engineblue.presentation.entity.HistoricStation
 import com.engineblue.presentation.entity.ListStationsState
 import com.engineblue.presentation.entity.StationDisplayModel
 import com.engineblue.presentation.mapper.transformStationList
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class ListStationsViewModel(
@@ -113,24 +117,79 @@ class ListStationsViewModel(
         launch {
             val calendar = Calendar.getInstance()
 
-            calendar[Calendar.DAY_OF_MONTH] = calendar[Calendar.DAY_OF_MONTH] - 1
-
             val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
 
             val product = getSavedProduct()
 
-            if (item.cityId != null && product.id != null) {
-                val list = getRemoteHistoricByDateCityAndProduct(
-                    simpleDateFormat.format(calendar.time),
-                    item.cityId,
-                    product.id!!
-                )
 
-                list.forEach {
-                    Log.d("Encontrado", it.toString())
+            val responses = arrayListOf<Deferred<Any>>()
+
+            val mapStationsAndHistory = hashMapOf<String, MutableList<HistoricStation>>()
+            if (item.cityId != null && item.id != null && product.id != null) {
+                for (i in 1..10) {
+                    calendar.add(Calendar.DATE, -1)
+                    val date = calendar.time
+                    responses.add(
+                        getHistoricFuelByDay(
+                            item,
+                            simpleDateFormat,
+                            date,
+                            product,
+                            mapStationsAndHistory
+                        )
+                    )
                 }
+
+
+                responses.awaitAll()
+
+                val currentState = uiState.value.items
+
+                currentState.forEach {
+                    val list = mapStationsAndHistory[it.id]
+                    if (list != null) {
+                        it.historic = list
+                        Log.d("Log1**","Lista de precios por dia $list")
+                    }
+                }
+
+                _uiState.value = _uiState.value.copy(
+                    items = currentState,
+                    selectedFuel = uiState.value.selectedFuel,
+                    loading = uiState.value.loading
+                )
             }
         }
     }
 
+    private fun getHistoricFuelByDay(
+        item: StationDisplayModel,
+        simpleDateFormat: SimpleDateFormat,
+        date: Date,
+        product: FuelEntity,
+        mapStationsAndHistory: HashMap<String, MutableList<HistoricStation>>
+    ) = async {
+        val dateFormatted = simpleDateFormat.format(date)
+
+        val response = getRemoteHistoricByDateCityAndProduct(
+            dateFormatted,
+            item.cityId!!,
+            product.id!!
+        )
+        response.forEach {
+            val prize = it.prize
+            if (prize != null) {
+                Log.d("LOG1**", "nuevo item $prize")
+                val newItem = HistoricStation(dateFormatted, prize)
+                if (mapStationsAndHistory.containsKey(item.id)) {
+                    val currentList = mapStationsAndHistory[item.id]
+                    currentList?.add(newItem)
+                } else {
+                    val newList = arrayListOf<HistoricStation>()
+                    newList.add(newItem)
+                    mapStationsAndHistory[item.id!!] = newList
+                }
+            }
+        }
+    }
 }
