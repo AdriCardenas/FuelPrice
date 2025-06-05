@@ -1,3 +1,0 @@
-package com.engineblue.presentation.useCases.preferences
-
-class GetSavedIntImpl

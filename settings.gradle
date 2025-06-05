@@ -1,3 +1,0 @@
-include ':data'
-rootProject.name = 'Fuel Price'
-include ':app', ':presentation', ':domain'

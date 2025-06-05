@@ -1,5 +1,0 @@
-package com.engineblue.domain.useCasesContract.preferences
-
-interface SaveInt {
-    fun saveInt(key: String, value: Int)
-}

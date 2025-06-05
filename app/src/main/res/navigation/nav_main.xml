@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/onboarding_fragment"
-        android:name="com.engineblue.fuelprice.fragment.OnBoardingFragment"
+        android:name="com.engineblue.fuel.fuelprice.fragment.OnBoardingFragment"
         android:label="OnBoardingFragment"
         tools:layout="@layout/onboarding_fragment">
         <action
@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/configuration_fuel_product"
-        android:name="com.engineblue.fuelprice.fragment.ConfigureFuelProductOptionFragment"
+        android:name="com.engineblue.fuel.fuelprice.fragment.ConfigureFuelProductOptionFragment"
         tools:layout="@layout/configure_fuel_product_option_fragment">
 
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/list_stations"
-        android:name="com.engineblue.fuelprice.fragment.StationListFragment"
+        android:name="com.engineblue.fuel.fuelprice.fragment.StationListFragment"
         android:label="@string/app_name"
         tools:layout="@layout/station_list_fragment">
 

@@ -1,4 +1,4 @@
-package com.engineblue.fuelprice
+package com.engineblue.fuel.fuelprice
 
 import org.junit.Test
 

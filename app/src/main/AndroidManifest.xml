@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.engineblue.fuelprice.FuelApplication"
+        android:name="com.engineblue.fuel.fuelprice.FuelApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,13 +20,13 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5616912530270062~4006520041"/>
 
-        <activity android:name=".activity.MainActivity"
+        <activity android:name="com.engineblue.fuel.fuelprice.activity.MainActivity"
             android:theme="@style/Theme.App.Starting"
             android:configChanges="orientation|screenSize|smallestScreenSize"
             android:exported="true">
         </activity>
 
-        <activity android:name=".activity.HomeActivity"
+        <activity android:name="com.engineblue.fuel.fuelprice.activity.HomeActivity"
             android:theme="@style/Theme.App.Starting"
             android:configChanges="orientation|screenSize|smallestScreenSize"
             android:exported="true">

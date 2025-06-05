@@ -1,0 +1,195 @@
+package com.engineblue.fuel.presentation.viewmodel
+
+import android.location.Location
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import com.engineblue.fuel.domain.entity.FuelEntity
+import com.engineblue.fuel.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct
+import com.engineblue.fuel.domain.useCasesContract.GetRemoteStations
+import com.engineblue.fuel.domain.useCasesContract.preferences.GetSavedProduct
+import com.engineblue.fuel.presentation.entity.HistoricStation
+import com.engineblue.fuel.presentation.entity.ListStationsState
+import com.engineblue.fuel.presentation.entity.StationDisplayModel
+import com.engineblue.fuel.presentation.mapper.transformStationList
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+
+class ListStationsViewModel(
+    private val getRemoteStations: com.engineblue.fuel.domain.useCasesContract.GetRemoteStations,
+    private val getRemoteHistoricByDateCityAndProduct: com.engineblue.fuel.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct,
+    private val getSavedProduct: com.engineblue.fuel.domain.useCasesContract.preferences.GetSavedProduct,
+    scope: ViewModelScope = viewModelScope()
+) :
+    ViewModel(), ViewModelScope by scope {
+
+
+    // Backing property to avoid state updates from other classes
+    private val _uiState = MutableStateFlow(ListStationsState())
+
+    // The UI collects from this StateFlow to get its state updates
+    val uiState: StateFlow<ListStationsState> = _uiState
+
+    private var latitude: Double? = null
+    private var longitude: Double? = null
+
+    private fun getSavedProduct(): FuelEntity = getSavedProduct.getSavedProduct()
+
+    fun loadStations() {
+        launch {
+            val model = uiState.value.copy(
+                loading = true,
+                items = emptyList()
+            )
+            _uiState.value = model
+            val productSelected = getSavedProduct()
+            var items = emptyList<com.engineblue.fuel.presentation.entity.StationDisplayModel>()
+
+            val currentPosition = Location("Current Position")
+
+            if (productSelected.id != null
+                && (productSelected.id != _uiState.value.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)
+            ) {
+                val remoteStations = getRemoteStations.getListRemoteStations(productSelected.id!!)
+
+                items = if (latitude != null && longitude != null) {
+
+                    currentPosition.latitude = latitude!!
+                    currentPosition.longitude = longitude!!
+
+                    val list = transformStationList(remoteStations, currentPosition)
+                    val orderedList = list.sortedBy { it.distance }
+
+                    setPricesColors(orderedList)
+                } else {
+                    setPricesColors(transformStationList(remoteStations, null))
+                }
+            }
+
+            val model2 = uiState.value.copy(
+                loading = false,
+                items = items,
+                selectedFuel = productSelected
+            )
+            _uiState.value = model2
+        }
+    }
+
+    private fun setPricesColors(list: List<com.engineblue.fuel.presentation.entity.StationDisplayModel>): List<com.engineblue.fuel.presentation.entity.StationDisplayModel> {
+        val prices = list.mapNotNull { it.price?.replace(",", ".")?.toFloat() }
+
+        val mean = prices.average()
+
+        list.forEach { station ->
+            val price = station.price?.replace(",", ".")?.toFloatOrNull()
+            if (price != null) {
+                if (price < (mean - 0.05)) {
+                    station.priceStatus = com.engineblue.fuel.presentation.entity.StationDisplayModel.PriceStatus.CHEAP
+                } else if ((mean - 0.05) < price && price < (mean + 0.05)) {
+                    station.priceStatus = com.engineblue.fuel.presentation.entity.StationDisplayModel.PriceStatus.REGULAR
+                } else {
+                    station.priceStatus = com.engineblue.fuel.presentation.entity.StationDisplayModel.PriceStatus.EXPENSIVE
+                }
+            }
+        }
+
+        return list
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        job.cancel()
+    }
+
+    fun setLocation(latitude: Double?, longitude: Double?) {
+        this.latitude = latitude
+        this.longitude = longitude
+    }
+
+    fun loadHistoric(item: com.engineblue.fuel.presentation.entity.StationDisplayModel) {
+        launch {
+            val calendar = Calendar.getInstance()
+
+            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+
+            val product = getSavedProduct()
+
+
+            val responses = arrayListOf<Deferred<Any>>()
+
+            val mapStationsAndHistory = hashMapOf<String, MutableList<HistoricStation>>()
+            if (item.cityId != null && item.id != null && product.id != null) {
+                for (i in 1..10) {
+                    calendar.add(Calendar.DATE, -1)
+                    val date = calendar.time
+                    responses.add(
+                        getHistoricFuelByDay(
+                            item,
+                            simpleDateFormat,
+                            date,
+                            product,
+                            mapStationsAndHistory
+                        )
+                    )
+                }
+
+
+                responses.awaitAll()
+
+                val currentState = uiState.value.items
+
+                currentState.forEach {
+                    val list = mapStationsAndHistory[it.id]
+                    if (list != null) {
+                        it.historic = list
+                        Log.d("Log1**","Lista de precios por dia $list")
+                    }
+                }
+
+                _uiState.value = _uiState.value.copy(
+                    items = currentState,
+                    selectedFuel = uiState.value.selectedFuel,
+                    loading = uiState.value.loading
+                )
+            }
+        }
+    }
+
+    private fun getHistoricFuelByDay(
+        item: com.engineblue.fuel.presentation.entity.StationDisplayModel,
+        simpleDateFormat: SimpleDateFormat,
+        date: Date,
+        product: FuelEntity,
+        mapStationsAndHistory: HashMap<String, MutableList<HistoricStation>>
+    ) = async {
+        val dateFormatted = simpleDateFormat.format(date)
+
+        val response = getRemoteHistoricByDateCityAndProduct(
+            dateFormatted,
+            item.cityId!!,
+            product.id!!
+        )
+        response.forEach {
+            val prize = it.prize
+            if (prize != null) {
+                Log.d("LOG1**", "nuevo item $prize")
+                val newItem = HistoricStation(dateFormatted, prize)
+                if (mapStationsAndHistory.containsKey(item.id)) {
+                    val currentList = mapStationsAndHistory[item.id]
+                    currentList?.add(newItem)
+                } else {
+                    val newList = arrayListOf<HistoricStation>()
+                    newList.add(newItem)
+                    mapStationsAndHistory[item.id!!] = newList
+                }
+            }
+        }
+    }
+}
