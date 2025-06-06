@@ -27,8 +27,7 @@ class ListStationsViewModel(
     private val getRemoteHistoricByDateCityAndProduct: com.engineblue.fuel.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct,
     private val getSavedProduct: com.engineblue.fuel.domain.useCasesContract.preferences.GetSavedProduct,
     scope: ViewModelScope = viewModelScope()
-) :
-    ViewModel(), ViewModelScope by scope {
+) : ViewModel(), ViewModelScope by scope {
 
 
     // Backing property to avoid state updates from other classes
@@ -45,18 +44,15 @@ class ListStationsViewModel(
     fun loadStations() {
         launch {
             val model = uiState.value.copy(
-                loading = true,
-                items = emptyList()
+                loading = true, items = emptyList()
             )
             _uiState.value = model
             val productSelected = getSavedProduct()
-            var items = emptyList<com.engineblue.fuel.presentation.entity.StationDisplayModel>()
+            var items = emptyList<StationDisplayModel>()
 
             val currentPosition = Location("Current Position")
 
-            if (productSelected.id != null
-                && (productSelected.id != _uiState.value.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)
-            ) {
+            if (productSelected.id != null && (productSelected.id != _uiState.value.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)) {
                 val remoteStations = getRemoteStations.getListRemoteStations(productSelected.id!!)
 
                 items = if (latitude != null && longitude != null) {
@@ -74,15 +70,13 @@ class ListStationsViewModel(
             }
 
             val model2 = uiState.value.copy(
-                loading = false,
-                items = items,
-                selectedFuel = productSelected
+                loading = false, items = items, selectedFuel = productSelected
             )
             _uiState.value = model2
         }
     }
 
-    private fun setPricesColors(list: List<com.engineblue.fuel.presentation.entity.StationDisplayModel>): List<com.engineblue.fuel.presentation.entity.StationDisplayModel> {
+    private fun setPricesColors(list: List<StationDisplayModel>): List<StationDisplayModel> {
         val prices = list.mapNotNull { it.price?.replace(",", ".")?.toFloat() }
 
         val mean = prices.average()
@@ -91,11 +85,11 @@ class ListStationsViewModel(
             val price = station.price?.replace(",", ".")?.toFloatOrNull()
             if (price != null) {
                 if (price < (mean - 0.05)) {
-                    station.priceStatus = com.engineblue.fuel.presentation.entity.StationDisplayModel.PriceStatus.CHEAP
+                    station.priceStatus = StationDisplayModel.PriceStatus.CHEAP
                 } else if ((mean - 0.05) < price && price < (mean + 0.05)) {
-                    station.priceStatus = com.engineblue.fuel.presentation.entity.StationDisplayModel.PriceStatus.REGULAR
+                    station.priceStatus = StationDisplayModel.PriceStatus.REGULAR
                 } else {
-                    station.priceStatus = com.engineblue.fuel.presentation.entity.StationDisplayModel.PriceStatus.EXPENSIVE
+                    station.priceStatus = StationDisplayModel.PriceStatus.EXPENSIVE
                 }
             }
         }
@@ -113,8 +107,8 @@ class ListStationsViewModel(
         this.longitude = longitude
     }
 
-    fun loadHistoric(item: com.engineblue.fuel.presentation.entity.StationDisplayModel) {
-        launch {
+    fun loadHistoric(item: StationDisplayModel) {
+        if (item.historic.isEmpty()) launch {
             val calendar = Calendar.getInstance()
 
             val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
@@ -131,11 +125,7 @@ class ListStationsViewModel(
                     val date = calendar.time
                     responses.add(
                         getHistoricFuelByDay(
-                            item,
-                            simpleDateFormat,
-                            date,
-                            product,
-                            mapStationsAndHistory
+                            item, simpleDateFormat, date, product, mapStationsAndHistory
                         )
                     )
                 }
@@ -145,16 +135,17 @@ class ListStationsViewModel(
 
                 val currentState = uiState.value.items
 
-                currentState.forEach {
-                    val list = mapStationsAndHistory[it.id]
-                    if (list != null) {
-                        it.historic = list
-                        Log.d("Log1**","Lista de precios por dia $list")
+                val newList = currentState.map {
+                    if (it.id == item.id) {
+                        it.copy(historic = mapStationsAndHistory[item.id] ?: listOf())
+                    } else {
+                        it
                     }
                 }
 
+
                 _uiState.value = _uiState.value.copy(
-                    items = currentState,
+                    items = newList,
                     selectedFuel = uiState.value.selectedFuel,
                     loading = uiState.value.loading
                 )
@@ -163,7 +154,7 @@ class ListStationsViewModel(
     }
 
     private fun getHistoricFuelByDay(
-        item: com.engineblue.fuel.presentation.entity.StationDisplayModel,
+        item: StationDisplayModel,
         simpleDateFormat: SimpleDateFormat,
         date: Date,
         product: FuelEntity,
@@ -172,22 +163,20 @@ class ListStationsViewModel(
         val dateFormatted = simpleDateFormat.format(date)
 
         val response = getRemoteHistoricByDateCityAndProduct(
-            dateFormatted,
-            item.cityId!!,
-            product.id!!
+            dateFormatted, item.cityId!!, product.id!!
         )
         response.forEach {
             val prize = it.prize
             if (prize != null) {
                 Log.d("LOG1**", "nuevo item $prize")
                 val newItem = HistoricStation(dateFormatted, prize)
-                if (mapStationsAndHistory.containsKey(item.id)) {
-                    val currentList = mapStationsAndHistory[item.id]
+                if (mapStationsAndHistory.containsKey(it.id)) {
+                    val currentList = mapStationsAndHistory[it.id]
                     currentList?.add(newItem)
                 } else {
                     val newList = arrayListOf<HistoricStation>()
                     newList.add(newItem)
-                    mapStationsAndHistory[item.id!!] = newList
+                    mapStationsAndHistory[it.id!!] = newList
                 }
             }
         }

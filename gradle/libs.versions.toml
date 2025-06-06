@@ -7,7 +7,6 @@ junitVersion = "1.2.1"
 espressoCore = "3.5.1"
 appcompat = "1.7.0"
 material = "1.14.0-alpha01"
-ktx                    = "1.9.0"
 constraintlayout       = "2.2.1"
 coil                   = "2.7.0"
 recyclerView           = "1.4.0"
@@ -32,7 +31,7 @@ compose               = "2025.06.00"
 googleServicesPlugin = "4.4.2"
 ksp = "2.1.21-2.0.1"
 playServicesLocation = "21.3.0"
-charts = "2.1.0"
+charty = "2.1.0-beta03.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -75,7 +74,7 @@ recyclerView = { group = "androidx.recyclerview", name = "recyclerview", version
 constraintLayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 androidx-material3 = { module = "androidx.compose.material3:material3" }
-charts = { module = "co.yml:ycharts", version.ref = "charts" }
+charts = { module = "com.himanshoe:charty", version.ref = "charty" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

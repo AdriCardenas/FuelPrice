@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,23 +35,17 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import co.yml.charts.common.model.Point
-import co.yml.charts.ui.linechart.LineChart
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.Line
-import co.yml.charts.ui.linechart.model.LineChartData
-import co.yml.charts.ui.linechart.model.LinePlotData
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.ui.linechart.model.ShadowUnderLine
-import com.fuel.engineblue.R
 import com.engineblue.fuel.fuelprice.core.components.FuelTopAppBar
 import com.engineblue.fuel.fuelprice.core.ui.colorCheap
 import com.engineblue.fuel.fuelprice.core.ui.colorExpensive
 import com.engineblue.fuel.fuelprice.core.ui.colorRegular
 import com.engineblue.fuel.presentation.entity.StationDisplayModel
 import com.engineblue.fuel.presentation.viewmodel.ListStationsViewModel
+import com.fuel.engineblue.R
+import com.himanshoe.charty.common.ChartColor
+import com.himanshoe.charty.common.LabelConfig
+import com.himanshoe.charty.line.LineChart
+import com.himanshoe.charty.line.model.LineData
 import java.text.DecimalFormat
 
 @Composable
@@ -105,14 +99,16 @@ fun StationItem(station: StationDisplayModel, onClickItem: (StationDisplayModel)
         else -> colorRegular
     }
 
-    val pointsData: List<Point> =
-        listOf(
-            Point(0f, 40f),
-            Point(1f, 90f),
-            Point(2f, 0f),
-            Point(3f, 60f),
-            Point(4f, 10f)
+    val pointsData = arrayListOf<LineData>()
+
+    station.historic.forEach { historicStation ->
+        pointsData.add(
+            LineData(
+                xValue = historicStation.date,
+                yValue = historicStation.prize.replace(",", ".").toFloat()
+            )
         )
+    }
 
     Box(modifier = Modifier.clickable {
         expanded = !expanded
@@ -177,26 +173,21 @@ fun StationItem(station: StationDisplayModel, onClickItem: (StationDisplayModel)
                 }
 
             }
-            if (expanded)
-                LineChart(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(300.dp),
-                    lineChartData = LineChartData(
-                        linePlotData = LinePlotData(
-                            lines = listOf(
-                                Line(
-                                    dataPoints = pointsData,
-                                    LineStyle(),
-                                    IntersectionPoint(),
-                                    SelectionHighlightPoint(),
-                                    ShadowUnderLine(),
-                                    SelectionHighlightPopUp()
-                                )
-                            ),
-                        )
-                    )
-                )
+//            if (expanded && pointsData.isNotEmpty())
+//                TODO AÑADIR DETALLE DE ESTACIÓN
+//                LineChart(
+//                    modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 120.dp).padding(16.dp),
+//                    data = { pointsData },
+//                    labelConfig = LabelConfig(
+//                        textColor = ChartColor.Solid(MaterialTheme.colorScheme.primary),
+//                        showXLabel = true,
+//                        showYLabel = true,
+//                        xAxisCharCount = 5,
+//                        labelTextStyle = MaterialTheme.typography.labelSmall
+//                    ),
+//
+//                    onClick = { lineData -> println("Clicked: ${lineData.xValue} -> ${lineData.yValue}") }
+//                )
         }
     }
 }
