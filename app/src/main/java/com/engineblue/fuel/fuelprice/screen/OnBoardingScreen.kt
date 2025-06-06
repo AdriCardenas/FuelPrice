@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -36,12 +38,12 @@ import org.koin.androidx.compose.get
 fun OnBoardingScreen(
     onFinishOnBoarding: () -> Unit,
 ) {
-    val viewModel: com.engineblue.fuel.presentation.viewmodel.OnBoardingViewModel = get()
+    val viewModel: OnBoardingViewModel = get()
 
-    val onboardPagesList = arrayListOf<com.engineblue.fuel.presentation.entity.OnBoardingItemDisplayModel>()
+    val onboardPagesList = arrayListOf<OnBoardingItemDisplayModel>()
 
     onboardPagesList.add(
-        com.engineblue.fuel.presentation.entity.OnBoardingItemDisplayModel(
+        OnBoardingItemDisplayModel(
             R.drawable.cost_control_boarding,
             stringResource(R.string.onboarding_cost_title),
             stringResource(R.string.onboarding_cost_description)
@@ -49,7 +51,7 @@ fun OnBoardingScreen(
     )
 
     onboardPagesList.add(
-        com.engineblue.fuel.presentation.entity.OnBoardingItemDisplayModel(
+        OnBoardingItemDisplayModel(
             R.drawable.fuel_boarding,
             stringResource(R.string.onboarding_fuel_title),
             stringResource(R.string.onboarding_fuel_description)
@@ -57,7 +59,7 @@ fun OnBoardingScreen(
     )
 
     onboardPagesList.add(
-        com.engineblue.fuel.presentation.entity.OnBoardingItemDisplayModel(
+        OnBoardingItemDisplayModel(
             R.drawable.secure_data_boarding,
             stringResource(R.string.onboarding_secure_title),
             stringResource(R.string.onboarding_secure_description)
@@ -68,64 +70,66 @@ fun OnBoardingScreen(
 
     val prefFirstStart = stringResource(R.string.pref_first_start)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.Center,
-    ) {
-
-        Row(
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.Center,
         ) {
-            Spacer(modifier = Modifier.size(16.dp))
-            if (currentPage.value > 0)
-                IconButton(onClick = { if (currentPage.value > 0) currentPage.value-- }) {
-                    Icon(
-                        Icons.Filled.ArrowBack,
-                        stringResource(id = R.string.go_back),
-                        tint = MaterialTheme.colorScheme.onBackground
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.size(16.dp))
+                if (currentPage.value > 0)
+                    IconButton(onClick = { if (currentPage.value > 0) currentPage.value-- }) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            stringResource(id = R.string.go_back),
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                Box(modifier = Modifier.weight(1f))
+                TextButton(
+                    modifier = Modifier.padding(16.dp),
+                    onClick = {
+                        viewModel.saveOnboardingChecked(prefFirstStart)
+                        onFinishOnBoarding()
+                    },
+                ) {
+                    Text(
+                        text = stringResource(R.string.skip),
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
-            Box(modifier = Modifier.weight(1f))
-            TextButton(
-                modifier = Modifier.padding(16.dp),
-                onClick = {
+            }
+
+            OnboardingItem(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                item = onboardPagesList[currentPage.value]
+            )
+
+            OnBoardNavButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(16.dp),
+                currentPage = currentPage.value,
+                noOfPages = onboardPagesList.size,
+                onNextClicked = {
+                    currentPage.value++
+                },
+                onStartClicked = {
                     viewModel.saveOnboardingChecked(prefFirstStart)
                     onFinishOnBoarding()
-                },
-            ) {
-                Text(
-                    text = stringResource(R.string.skip),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+                }
+            )
         }
-
-        OnboardingItem(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            item = onboardPagesList[currentPage.value]
-        )
-
-        OnBoardNavButton(
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(16.dp),
-            currentPage = currentPage.value,
-            noOfPages = onboardPagesList.size,
-            onNextClicked = {
-                currentPage.value++
-            },
-            onStartClicked = {
-                viewModel.saveOnboardingChecked(prefFirstStart)
-                onFinishOnBoarding()
-            }
-        )
-
     }
 }
 

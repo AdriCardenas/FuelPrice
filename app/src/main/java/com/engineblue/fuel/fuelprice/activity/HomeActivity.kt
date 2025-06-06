@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -40,7 +41,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-
+        enableEdgeToEdge()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         setContent {
@@ -57,14 +58,19 @@ class HomeActivity : AppCompatActivity() {
                     composable("onboarding") {
                         OnBoardingScreen {
                             navController.navigate("configuration_fuel") {
-                                popUpTo("configuration_fuel")
+                                popUpTo("onboarding"){
+                                    inclusive=true
+                                }
                             }
                         }
                     }
                     composable("configuration_fuel") {
                         ConfigurationFuelScreen {
                             navController.navigate("home") {
-                                popUpTo("home")
+                                popUpTo("configuration_fuel"){
+                                    inclusive=true
+                                }
+                                launchSingleTop = true
                             }
                         }
                     }
@@ -78,7 +84,6 @@ class HomeActivity : AppCompatActivity() {
                                 popUpTo("home")
                             }
                         }
-//                        { onBackPressedDispatcher.onBackPressed() }
                     }
                 }
             }

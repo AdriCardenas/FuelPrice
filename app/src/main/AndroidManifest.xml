@@ -20,12 +20,6 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5616912530270062~4006520041"/>
 
-        <activity android:name="com.engineblue.fuel.fuelprice.activity.MainActivity"
-            android:theme="@style/Theme.App.Starting"
-            android:configChanges="orientation|screenSize|smallestScreenSize"
-            android:exported="true">
-        </activity>
-
         <activity android:name="com.engineblue.fuel.fuelprice.activity.HomeActivity"
             android:theme="@style/Theme.App.Starting"
             android:configChanges="orientation|screenSize|smallestScreenSize"
