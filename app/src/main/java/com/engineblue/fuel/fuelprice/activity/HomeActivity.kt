@@ -2,12 +2,20 @@ package com.engineblue.fuel.fuelprice.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.gestures.forEach
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.input.key.key
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,15 +36,16 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.core.net.toUri
+import com.engineblue.fuel.presentation.viewmodel.RoutingViewModel
 
 class HomeActivity : AppCompatActivity() {
 
-    private val viewModel: com.engineblue.fuel.presentation.viewmodel.RoutingViewModel by viewModel()
+    private val viewModel: RoutingViewModel by viewModel()
     private val stationViewModel: ListStationsViewModel by viewModel()
 
     private var location: Location? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var firstLoad = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -58,8 +67,8 @@ class HomeActivity : AppCompatActivity() {
                     composable("onboarding") {
                         OnBoardingScreen {
                             navController.navigate("configuration_fuel") {
-                                popUpTo("onboarding"){
-                                    inclusive=true
+                                popUpTo("onboarding") {
+                                    inclusive = true
                                 }
                             }
                         }
@@ -67,23 +76,23 @@ class HomeActivity : AppCompatActivity() {
                     composable("configuration_fuel") {
                         ConfigurationFuelScreen {
                             navController.navigate("home") {
-                                popUpTo("configuration_fuel"){
-                                    inclusive=true
+                                popUpTo("configuration_fuel") {
+                                    inclusive = true
                                 }
                                 launchSingleTop = true
                             }
                         }
                     }
                     composable("home") {
-                        if (firstLoad) {
-                            checkLocationPermission()
-                            firstLoad = false
-                        }
-                        HomeScreen(viewModel = stationViewModel) {
-                            navController.navigate("configuration_fuel") {
-                                popUpTo("home")
-                            }
-                        }
+                        HomeScreen(
+                            viewModel = stationViewModel,
+                            navigateToMaps = ::navigateToMaps,
+                            getCurrentLocation = ::getCurrentLocation,
+                            onSettingClicked = {
+                                navController.navigate("configuration_fuel") {
+                                    popUpTo("home")
+                                }
+                            })
                     }
                 }
             }
@@ -91,34 +100,33 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkLocationPermission() {
-        Dexter.withContext(this).withPermissions(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ).withListener(object : MultiplePermissionsListener {
-            override fun onPermissionsChecked(report: MultiplePermissionsReport) {
-                if (report.areAllPermissionsGranted()) {
-                    getCurrentLocation()
-                } else {
-                    // Permission request was denied.
-                    toast(
-                        getString(R.string.location_permission_denied),
-                        Snackbar.LENGTH_SHORT
-                    )
-                }
-            }
+    override fun onResume() {
+        super.onResume()
 
-            override fun onPermissionRationaleShouldBeShown(
-                permissions: List<PermissionRequest?>?,
-                token: PermissionToken?
-            ) {
-                //TODO MANUAL LOCATION
-                toast(R.string.location_permission_denied)
+        stationViewModel.checkLoadStations()
+    }
+
+    private fun navigateToMaps(location: Location, name:String) {
+        val latitude = location.latitude
+        val longitude = location.longitude
+
+        val gmmIntentUri = "geo:$latitude,$longitude?q=$latitude,$longitude($name)"
+        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri.toUri())
+        mapIntent.setPackage("com.google.android.apps.maps") // Specify Google Maps package
+
+        if (mapIntent.resolveActivity(packageManager) != null) {
+            startActivity(mapIntent)
+        }else {
+            // Google Maps app is not installed, handle this (e.g., show a Toast or open in browser)
+            val webUri = "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude".toUri()
+            val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+            if (webIntent.resolveActivity(packageManager) != null) {
+                startActivity(webIntent)
+            } else {
+                // No app can handle even the web URL
+                // Show an error message
             }
-        })
-            .withErrorListener {
-                toast(it.name)
-            }.check()
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -128,7 +136,7 @@ class HomeActivity : AppCompatActivity() {
         }.addOnCompleteListener {
             if (it.isSuccessful) {
                 this.location = it.result
-                stationViewModel.setLocation(location?.latitude, location?.longitude)
+                stationViewModel.setLocation(location?.latitude?:0.0, location?.longitude?: 0.0)
                 stationViewModel.loadStations()
             } else {
                 stationViewModel.loadStations()

@@ -1,5 +1,17 @@
 package com.engineblue.fuel.fuelprice.screen
 
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,30 +27,41 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.engineblue.fuel.fuelprice.core.components.FuelTopAppBar
 import com.engineblue.fuel.fuelprice.core.ui.colorCheap
 import com.engineblue.fuel.fuelprice.core.ui.colorExpensive
 import com.engineblue.fuel.fuelprice.core.ui.colorRegular
+import com.engineblue.fuel.presentation.entity.ListStationsUiState
 import com.engineblue.fuel.presentation.entity.StationDisplayModel
 import com.engineblue.fuel.presentation.viewmodel.ListStationsViewModel
 import com.fuel.engineblue.R
@@ -47,14 +70,47 @@ import com.himanshoe.charty.common.LabelConfig
 import com.himanshoe.charty.line.LineChart
 import com.himanshoe.charty.line.model.LineData
 import java.text.DecimalFormat
+import kotlin.collections.toTypedArray
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: ListStationsViewModel,
-    onSettingClicked: () -> Unit
+    onSettingClicked: () -> Unit,
+    navigateToMaps: (location: Location, name: String) -> Unit,
+    getCurrentLocation: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsState().value
+
+    val context = LocalContext.current
+    var hasFineLocationPermission by rememberSaveable {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted ->
+            if (granted) {
+                hasFineLocationPermission = true
+                getCurrentLocation()
+            }
+        }
+    )
+
+    LaunchedEffect(Unit) { // Runs once on initial composition
+        if (!hasFineLocationPermission) {
+            locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            // No need to add COARSE if requesting FINE
+        } else {
+            // Permissions were already granted, or no foreground permissions needed to be asked.
+            getCurrentLocation()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -64,7 +120,7 @@ fun HomeScreen(
             ) { onSettingClicked() }
         },
         content = { padding ->
-            if (uiState.loading) {
+            if (uiState is ListStationsUiState.Loading) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -73,21 +129,53 @@ fun HomeScreen(
                 ) {
                     CircularProgressIndicator()
                 }
-            } else {
+            } else if (uiState is ListStationsUiState.Error) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(padding)
+                        .fillMaxSize()
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_error),
+                            contentDescription = stringResource(R.string.error),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                        Text(
+                            stringResource(R.string.no_data_available),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                        OutlinedButton(
+                            onClick = { viewModel.loadStations() },
+                            modifier = Modifier.padding(top = 16.dp)
+                        ) {
+                            Text(stringResource(R.string.reload))
+                        }
+                    }
+                }
+            } else if (uiState is ListStationsUiState.Success) {
                 LazyColumn(
                     modifier.padding(padding),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(uiState.items, itemContent = {
-                        StationItem(it) { item -> viewModel.loadHistoric(item) }
+                        StationItem(it) { item ->
+                            viewModel.loadHistoric(item)
+                            if (item.location != null && item.name != null)
+                                navigateToMaps(item.location, item.name)
+                        }
                     })
                 }
             }
         }
     )
 }
-
 
 @Composable
 fun StationItem(station: StationDisplayModel, onClickItem: (StationDisplayModel) -> Unit) {

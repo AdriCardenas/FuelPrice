@@ -40,4 +40,7 @@
     <string name="setting">Ajustes</string>
     <string name="Precio">price</string>
     <string name="fuel_price_title">Precio combustible</string>
+    <string name="error">Ha ocurrido un error</string>
+    <string name="no_data_available">No hay datos disponibles. Intentelo de nuevo</string>
+    <string name="reload">Volver a intentar</string>
 </resources>

@@ -7,6 +7,23 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+
+    <queries>
+        <!-- For launching Google Maps app -->
+        <package android:name="com.google.android.apps.maps" />
+
+        <!-- For launching web browsers (to handle http/https URLs) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <!-- If you also want to handle geo URIs with any map app (not just Google Maps) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="geo" />
+        </intent>
+    </queries>
+
     <application
         android:name="com.engineblue.fuel.fuelprice.FuelApplication"
         android:allowBackup="true"
@@ -18,12 +35,13 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-5616912530270062~4006520041"/>
+            android:value="ca-app-pub-5616912530270062~4006520041" />
 
-        <activity android:name="com.engineblue.fuel.fuelprice.activity.HomeActivity"
-            android:theme="@style/Theme.App.Starting"
+        <activity
+            android:name="com.engineblue.fuel.fuelprice.activity.HomeActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />

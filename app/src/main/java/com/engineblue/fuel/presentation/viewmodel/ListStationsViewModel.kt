@@ -4,11 +4,8 @@ import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.engineblue.fuel.domain.entity.FuelEntity
-import com.engineblue.fuel.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct
-import com.engineblue.fuel.domain.useCasesContract.GetRemoteStations
-import com.engineblue.fuel.domain.useCasesContract.preferences.GetSavedProduct
 import com.engineblue.fuel.presentation.entity.HistoricStation
-import com.engineblue.fuel.presentation.entity.ListStationsState
+import com.engineblue.fuel.presentation.entity.ListStationsUiState
 import com.engineblue.fuel.presentation.entity.StationDisplayModel
 import com.engineblue.fuel.presentation.mapper.transformStationList
 import kotlinx.coroutines.Deferred
@@ -31,10 +28,10 @@ class ListStationsViewModel(
 
 
     // Backing property to avoid state updates from other classes
-    private val _uiState = MutableStateFlow(ListStationsState())
+    private val _uiState:MutableStateFlow<ListStationsUiState> = MutableStateFlow(ListStationsUiState.Idle())
 
     // The UI collects from this StateFlow to get its state updates
-    val uiState: StateFlow<ListStationsState> = _uiState
+    val uiState: StateFlow<ListStationsUiState> = _uiState
 
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -43,36 +40,36 @@ class ListStationsViewModel(
 
     fun loadStations() {
         launch {
-            val model = uiState.value.copy(
-                loading = true, items = emptyList()
-            )
-            _uiState.value = model
             val productSelected = getSavedProduct()
             var items = emptyList<StationDisplayModel>()
 
             val currentPosition = Location("Current Position")
+            val state = uiState.value
+            if (productSelected.id != null && (state is ListStationsUiState.Success && productSelected.id != state.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)) {
+                _uiState.value = ListStationsUiState.Loading(selectedFuel = productSelected)
+                val remoteStations = getRemoteStations.getListRemoteStations(productSelected.id)
 
-            if (productSelected.id != null && (productSelected.id != _uiState.value.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)) {
-                val remoteStations = getRemoteStations.getListRemoteStations(productSelected.id!!)
+                if (remoteStations.isNotEmpty()) {
+                    items = if (latitude != null && longitude != null) {
 
-                items = if (latitude != null && longitude != null) {
+                        currentPosition.latitude = latitude!!
+                        currentPosition.longitude = longitude!!
 
-                    currentPosition.latitude = latitude!!
-                    currentPosition.longitude = longitude!!
+                        val list = transformStationList(remoteStations, currentPosition)
+                        val orderedList = list.sortedBy { it.distance }
 
-                    val list = transformStationList(remoteStations, currentPosition)
-                    val orderedList = list.sortedBy { it.distance }
-
-                    setPricesColors(orderedList)
-                } else {
-                    setPricesColors(transformStationList(remoteStations, null))
+                        setPricesColors(orderedList)
+                    } else {
+                        setPricesColors(transformStationList(remoteStations, null))
+                    }
                 }
-            }
 
-            val model2 = uiState.value.copy(
-                loading = false, items = items, selectedFuel = productSelected
-            )
-            _uiState.value = model2
+                _uiState.value = ListStationsUiState.Success(
+                    items = items, selectedFuel = productSelected
+                )
+            }else{
+                _uiState.value = ListStationsUiState.Error(selectedFuel = productSelected)
+            }
         }
     }
 
@@ -102,55 +99,54 @@ class ListStationsViewModel(
         job.cancel()
     }
 
-    fun setLocation(latitude: Double?, longitude: Double?) {
+    fun setLocation(latitude: Double, longitude: Double) {
         this.latitude = latitude
         this.longitude = longitude
     }
 
     fun loadHistoric(item: StationDisplayModel) {
-        if (item.historic.isEmpty()) launch {
-            val calendar = Calendar.getInstance()
-
-            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-
-            val product = getSavedProduct()
-
-
-            val responses = arrayListOf<Deferred<Any>>()
-
-            val mapStationsAndHistory = hashMapOf<String, MutableList<HistoricStation>>()
-            if (item.cityId != null && item.id != null && product.id != null) {
-                for (i in 1..10) {
-                    calendar.add(Calendar.DATE, -1)
-                    val date = calendar.time
-                    responses.add(
-                        getHistoricFuelByDay(
-                            item, simpleDateFormat, date, product, mapStationsAndHistory
-                        )
-                    )
-                }
-
-
-                responses.awaitAll()
-
-                val currentState = uiState.value.items
-
-                val newList = currentState.map {
-                    if (it.id == item.id) {
-                        it.copy(historic = mapStationsAndHistory[item.id] ?: listOf())
-                    } else {
-                        it
-                    }
-                }
-
-
-                _uiState.value = _uiState.value.copy(
-                    items = newList,
-                    selectedFuel = uiState.value.selectedFuel,
-                    loading = uiState.value.loading
-                )
-            }
-        }
+//        if (item.historic.isEmpty()) launch {
+//            val calendar = Calendar.getInstance()
+//
+//            val simpleDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+//
+//            val product = getSavedProduct()
+//
+//            val responses = arrayListOf<Deferred<Any>>()
+//
+//            val mapStationsAndHistory = hashMapOf<String, MutableList<HistoricStation>>()
+//            if (item.cityId != null && item.id != null && product.id != null) {
+//                for (i in 1..10) {
+//                    calendar.add(Calendar.DATE, -1)
+//                    val date = calendar.time
+//                    responses.add(
+//                        getHistoricFuelByDay(
+//                            item, simpleDateFormat, date, product, mapStationsAndHistory
+//                        )
+//                    )
+//                }
+//
+//
+//                responses.awaitAll()
+//
+//                val currentState = uiState.value.items
+//
+//                val newList = currentState.map {
+//                    if (it.id == item.id) {
+//                        it.copy(historic = mapStationsAndHistory[item.id] ?: listOf())
+//                    } else {
+//                        it
+//                    }
+//                }
+//
+//
+//                _uiState.value = _uiState.value.copy(
+//                    items = newList,
+//                    selectedFuel = uiState.value.selectedFuel,
+//                    loading = uiState.value.loading
+//                )
+//            }
+//        }
     }
 
     private fun getHistoricFuelByDay(
@@ -179,6 +175,13 @@ class ListStationsViewModel(
                     mapStationsAndHistory[it.id!!] = newList
                 }
             }
+        }
+    }
+
+    fun checkLoadStations() {
+        val currentState = uiState.value
+        if (currentState is ListStationsUiState.Success && currentState.items.isEmpty()){
+            loadStations()
         }
     }
 }
