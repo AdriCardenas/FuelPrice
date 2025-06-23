@@ -52,7 +52,7 @@ val mUseCaseModules = module {
     }
 
     factory<GetRemoteStations> {
-        com.engineblue.fuel.presentation.useCases.GetRemoteStationsImpl(
+        GetRemoteStationsImpl(
             repository = get(),
             dispatcher = Dispatchers.IO
         )
@@ -66,7 +66,7 @@ val mUseCaseModules = module {
     }
 
     factory<SaveProductSelected> {
-        com.engineblue.fuel.presentation.useCases.SaveProductSelectedImpl(
+        SaveProductSelectedImpl(
             repository = get()
         )
     }

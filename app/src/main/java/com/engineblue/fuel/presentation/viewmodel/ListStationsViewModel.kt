@@ -4,25 +4,24 @@ import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.engineblue.fuel.domain.entity.FuelEntity
+import com.engineblue.fuel.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct
+import com.engineblue.fuel.domain.useCasesContract.GetRemoteStations
+import com.engineblue.fuel.domain.useCasesContract.preferences.GetSavedProduct
 import com.engineblue.fuel.presentation.entity.HistoricStation
 import com.engineblue.fuel.presentation.entity.ListStationsUiState
 import com.engineblue.fuel.presentation.entity.StationDisplayModel
 import com.engineblue.fuel.presentation.mapper.transformStationList
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 class ListStationsViewModel(
-    private val getRemoteStations: com.engineblue.fuel.domain.useCasesContract.GetRemoteStations,
-    private val getRemoteHistoricByDateCityAndProduct: com.engineblue.fuel.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct,
-    private val getSavedProduct: com.engineblue.fuel.domain.useCasesContract.preferences.GetSavedProduct,
+    private val getRemoteStations: GetRemoteStations,
+    private val getRemoteHistoricByDateCityAndProduct: GetRemoteHistoricByDateCityAndProduct,
+    private val getSavedProduct: GetSavedProduct,
     scope: ViewModelScope = viewModelScope()
 ) : ViewModel(), ViewModelScope by scope {
 
@@ -36,18 +35,18 @@ class ListStationsViewModel(
     private var latitude: Double? = null
     private var longitude: Double? = null
 
-    private fun getSavedProduct(): FuelEntity = getSavedProduct.getSavedProduct()
+    private fun getSelectedFuel(): FuelEntity = getSavedProduct()
 
     fun loadStations() {
         launch {
-            val productSelected = getSavedProduct()
+            val productSelected = getSelectedFuel()
             var items = emptyList<StationDisplayModel>()
 
             val currentPosition = Location("Current Position")
             val state = uiState.value
-            if (productSelected.id != null && (state is ListStationsUiState.Success && productSelected.id != state.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)) {
+            if (productSelected.id != null && ((state is ListStationsUiState.Success && (productSelected.id != state.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude))|| state is ListStationsUiState.Error || state is ListStationsUiState.Idle)) {
                 _uiState.value = ListStationsUiState.Loading(selectedFuel = productSelected)
-                val remoteStations = getRemoteStations.getListRemoteStations(productSelected.id)
+                val remoteStations = getRemoteStations(productSelected.id)
 
                 if (remoteStations.isNotEmpty()) {
                     items = if (latitude != null && longitude != null) {
