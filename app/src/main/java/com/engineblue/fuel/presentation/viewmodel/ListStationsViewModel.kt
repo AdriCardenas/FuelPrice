@@ -27,7 +27,8 @@ class ListStationsViewModel(
 
 
     // Backing property to avoid state updates from other classes
-    private val _uiState:MutableStateFlow<ListStationsUiState> = MutableStateFlow(ListStationsUiState.Idle())
+    private val _uiState: MutableStateFlow<ListStationsUiState> =
+        MutableStateFlow(ListStationsUiState.Idle())
 
     // The UI collects from this StateFlow to get its state updates
     val uiState: StateFlow<ListStationsUiState> = _uiState
@@ -44,7 +45,7 @@ class ListStationsViewModel(
 
             val currentPosition = Location("Current Position")
             val state = uiState.value
-            if (productSelected.id != null && ((state is ListStationsUiState.Success && (productSelected.id != state.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude))|| state is ListStationsUiState.Error || state is ListStationsUiState.Idle)) {
+            if (productSelected.id != null && ((state is ListStationsUiState.Success && (productSelected.id != state.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)) || state is ListStationsUiState.Error || state is ListStationsUiState.Idle)) {
                 _uiState.value = ListStationsUiState.Loading(selectedFuel = productSelected)
                 val remoteStations = getRemoteStations(productSelected.id)
 
@@ -66,8 +67,9 @@ class ListStationsViewModel(
                 _uiState.value = ListStationsUiState.Success(
                     items = items, selectedFuel = productSelected
                 )
-            }else{
-                _uiState.value = ListStationsUiState.Error(selectedFuel = productSelected)
+            } else {
+                if (_uiState.value !is ListStationsUiState.Success)
+                    _uiState.value = ListStationsUiState.Error(selectedFuel = productSelected)
             }
         }
     }
@@ -179,7 +181,7 @@ class ListStationsViewModel(
 
     fun checkLoadStations() {
         val currentState = uiState.value
-        if (currentState is ListStationsUiState.Success && currentState.items.isEmpty()){
+        if (currentState is ListStationsUiState.Success && currentState.items.isEmpty()) {
             loadStations()
         }
     }
