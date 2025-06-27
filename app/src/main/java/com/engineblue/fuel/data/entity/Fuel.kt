@@ -1,10 +1,11 @@
 package com.engineblue.fuel.data.entity
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class Fuel(
-    @Json(name = "IDProducto") val id: String? = null,
-    @Json(name = "NombreProducto") val name: String? = null,
-    @Json(name ="NombreProductoAbreviatura") val nameAbbreviature: String? = null
+    @SerialName("IDProducto") val id: String? = null,
+    @SerialName("NombreProducto") val name: String? = null,
+    @SerialName("NombreProductoAbreviatura") val nameAbbreviature: String? = null
 )

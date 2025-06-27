@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.google.devtools.ksp)
 //    alias(libs.plugins.google.services.plugin)
     alias(libs.plugins.navigation.safeargs.plugin)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -89,16 +90,13 @@ dependencies {
     implementation(libs.multidex)
 
     // Other libs
-    // Retrofit 2
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-    implementation(libs.retrofit)
-    implementation(libs.converter.moshi)
-
-    // OkHttp 3
-    implementation(libs.okhttp.core)
-    implementation(libs.okhttp.interceptor)
-
+    // KTOR
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.client)
+    implementation(libs.ktor.serialization)
+    implementation(libs.ktor.negotiation)
+    implementation(libs.ktor.logging)
+    implementation(libs.ktor.serialization.json)
 
     // Coil
     implementation(libs.coil)

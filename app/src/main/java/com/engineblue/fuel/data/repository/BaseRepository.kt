@@ -1,7 +1,6 @@
 package com.engineblue.fuel.data.repository
 
 import com.engineblue.fuel.data.entity.ResponseResult
-import retrofit2.Response
 import java.io.IOException
 import java.util.logging.Level
 import java.util.logging.Logger
@@ -9,7 +8,7 @@ import java.util.logging.Logger
 
 abstract class BaseRepository(private val logger: Logger) {
     protected suspend fun <T : Any> safeApiCall(
-        call: suspend () -> Response<T>,
+        call: suspend () -> Result<T>,
         errorMessage: String
     ): T? {
 
@@ -31,17 +30,14 @@ abstract class BaseRepository(private val logger: Logger) {
     }
 
     private suspend fun <T : Any> safeApiResult(
-        call: suspend () -> Response<T>,
+        call: suspend () -> Result<T>,
         errorMessage: String
     ): ResponseResult<T> {
         try {
             val response = call.invoke()
 //            Log.d("LOG1**", response.headers().toString())
-            if (response.isSuccessful) return ResponseResult.Success(response.body()!!)
-            logger.log(
-                Level.FINE,
-                getRepositoryName() + "$errorMessage & Exception - ${response.body()}"
-            )
+            if (response.isSuccess) return ResponseResult.Success(response.getOrThrow())
+
             logger.log(Level.FINE, response.toString())
             return ResponseResult.Error(IOException("Ha ocurrido un error al lanzar la api - $errorMessage"))
         } catch (exception: Exception) {

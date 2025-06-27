@@ -16,18 +16,19 @@ import com.engineblue.fuel.domain.useCasesContract.preferences.GetSavedBoolean
 import com.engineblue.fuel.domain.useCasesContract.preferences.GetSavedProduct
 import com.engineblue.fuel.domain.useCasesContract.preferences.SaveBoolean
 import com.engineblue.fuel.domain.useCasesContract.preferences.SaveProductSelected
-import com.engineblue.fuel.fuelprice.network.createNetworkClient
+import com.engineblue.fuel.fuelprice.network.ApiDataSource
+import com.engineblue.fuel.fuelprice.network.httpClient
 import com.engineblue.fuel.fuelprice.preferences.PreferenceManager
 import com.engineblue.fuel.presentation.useCases.*
 import com.engineblue.fuel.presentation.useCases.preferences.SaveBooleanImpl
 import com.engineblue.fuel.presentation.viewmodel.FuelViewModel
 import com.engineblue.fuel.presentation.viewmodel.ListStationsViewModel
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import retrofit2.Retrofit
 import java.util.logging.Logger
 
 val mRepositoryModules = module {
@@ -96,8 +97,8 @@ val mUseCaseModules = module {
 }
 
 val mNetworkModules = module {
-    single(named(name = RETROFIT_INSTANCE)) { createNetworkClient(BASE_URL, androidContext()) }
-    single<FuelApi> { get<Retrofit>(named(name = RETROFIT_INSTANCE)).create(FuelApi::class.java) }
+    single<HttpClient> { httpClient(BASE_URL) }
+    single<FuelApi> { ApiDataSource(get()) }
 }
 
 val mViewModels = module {
@@ -140,4 +141,4 @@ val mPreferences = module {
 
 private const val BASE_URL =
     "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/"
-private const val RETROFIT_INSTANCE = "Retrofit"
+private const val API_CLIENT = "ApiClient"

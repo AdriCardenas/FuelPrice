@@ -1,7 +1,9 @@
 package com.engineblue.fuel.data.entity
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class StationWrapperResponse(
-    @Json(name ="ListaEESSPrecio") val stations: List<Station>?
+    @SerialName("ListaEESSPrecio") val stations: List<Station>?
 )

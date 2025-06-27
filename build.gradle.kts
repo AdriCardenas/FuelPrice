@@ -6,4 +6,5 @@ plugins {
     alias(libs.plugins.google.devtools.ksp) apply false
 //    alias(libs.plugins.google.services.plugin) apply false
     alias(libs.plugins.navigation.safeargs.plugin) apply false
+    alias(libs.plugins.serialization) apply false
 }

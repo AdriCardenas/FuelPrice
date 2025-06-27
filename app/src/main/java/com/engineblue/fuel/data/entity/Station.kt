@@ -1,21 +1,23 @@
 package com.engineblue.fuel.data.entity
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Station(
-    @Json(name ="IDEESS") val id: String? = null,
+    @SerialName("IDEESS") val id: String? = null,
 
-    @Json(name ="Latitud") val latitude: String? = null,
-    @Json(name ="Longitud (WGS84)") val longitude: String? = null,
+    @SerialName("Latitud") val latitude: String? = null,
+    @SerialName("Longitud (WGS84)") val longitude: String? = null,
 
-    @Json(name ="PrecioProducto") val prize: String? = null,
+    @SerialName("PrecioProducto") val prize: String? = null,
 
-    @Json(name ="Rótulo") val name: String? = null,
-    @Json(name ="Horario") val schedule: String? = null,
+    @SerialName("Rótulo") val name: String? = null,
+    @SerialName("Horario") val schedule: String? = null,
 
-    @Json(name ="C.P.") val zipCode: String? = null,
-    @Json(name ="Dirección") val direction: String? = null,
-    @Json(name ="Municipio") val city: String? = null,
-    @Json(name ="IDMunicipio") val cityId: String? = null,
-    @Json(name ="Provincia") val province: String? = null
+    @SerialName("C.P.") val zipCode: String? = null,
+    @SerialName("Dirección") val direction: String? = null,
+    @SerialName("Municipio") val city: String? = null,
+    @SerialName("IDMunicipio") val cityId: String? = null,
+    @SerialName("Provincia") val province: String? = null
 )
