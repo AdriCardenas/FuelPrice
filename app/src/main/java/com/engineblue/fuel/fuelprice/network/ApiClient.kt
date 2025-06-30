@@ -1,5 +1,6 @@
 package com.engineblue.fuel.fuelprice.network
 
+import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpTimeout
@@ -27,8 +28,13 @@ fun httpClient(baseUrl: String): HttpClient {
         }
 
         install(Logging) {
-            logger = Logger.DEFAULT // Or a custom logger
-            level = LogLevel.BODY // Log request and response bodies
+            logger = object : Logger {
+                override fun log(message: String) {
+                    Log.d("HTTP call", message)
+                }
+            }
+            level = LogLevel.ALL// Or a custom logger
+            level = LogLevel.ALL // Log request and response bodies
         }
 
         install(HttpTimeout){

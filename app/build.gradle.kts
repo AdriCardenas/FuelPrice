@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -31,16 +33,17 @@ android {
             )
         }
     }
-    compileOptions {
+
+    kotlin {
+        jvmToolchain(17)
+    }
+
+    java {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 
     buildFeatures {
-        viewBinding = true
         compose = true
         buildConfig = true
     }
@@ -101,10 +104,6 @@ dependencies {
     // Coil
     implementation(libs.coil)
 
-
-    // Chucker Inspector
-    debugImplementation(libs.chucker.debug)
-    releaseImplementation(libs.chucker.release)
 
     // Jetpack Compose
     val composeBom = platform(libs.compose.bom)

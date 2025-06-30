@@ -32,14 +32,14 @@ import com.engineblue.fuel.fuelprice.core.components.OnBoardNavButton
 import com.engineblue.fuel.fuelprice.core.components.OnboardingItem
 import com.engineblue.fuel.presentation.entity.OnBoardingItemDisplayModel
 import com.engineblue.fuel.presentation.viewmodel.OnBoardingViewModel
-import org.koin.androidx.compose.get
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun OnBoardingScreen(
     onFinishOnBoarding: () -> Unit,
 ) {
-    val viewModel: OnBoardingViewModel = get()
+    val viewModel = koinViewModel<OnBoardingViewModel>()
 
     val onboardPagesList = arrayListOf<OnBoardingItemDisplayModel>()
 

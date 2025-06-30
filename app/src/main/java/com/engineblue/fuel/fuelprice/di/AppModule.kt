@@ -19,15 +19,21 @@ import com.engineblue.fuel.domain.useCasesContract.preferences.SaveProductSelect
 import com.engineblue.fuel.fuelprice.network.ApiDataSource
 import com.engineblue.fuel.fuelprice.network.httpClient
 import com.engineblue.fuel.fuelprice.preferences.PreferenceManager
-import com.engineblue.fuel.presentation.useCases.*
+import com.engineblue.fuel.presentation.useCases.GetRemoteHistoricByDateCityAndProductImpl
+import com.engineblue.fuel.presentation.useCases.GetRemoteProductsImpl
+import com.engineblue.fuel.presentation.useCases.GetRemoteStationsImpl
+import com.engineblue.fuel.presentation.useCases.GetSavedProductImpl
+import com.engineblue.fuel.presentation.useCases.SaveLocationSelectedImpl
+import com.engineblue.fuel.presentation.useCases.SaveProductSelectedImpl
 import com.engineblue.fuel.presentation.useCases.preferences.SaveBooleanImpl
 import com.engineblue.fuel.presentation.viewmodel.FuelViewModel
 import com.engineblue.fuel.presentation.viewmodel.ListStationsViewModel
+import com.engineblue.fuel.presentation.viewmodel.OnBoardingViewModel
+import com.engineblue.fuel.presentation.viewmodel.RoutingViewModel
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.util.logging.Logger
 
@@ -115,13 +121,13 @@ val mViewModels = module {
     }
 
     viewModel {
-        com.engineblue.fuel.presentation.viewmodel.OnBoardingViewModel(
+        OnBoardingViewModel(
             saveBooleanPreference = get()
         )
     }
 
     viewModel {
-        com.engineblue.fuel.presentation.viewmodel.RoutingViewModel(
+        RoutingViewModel(
             getSavedBoolean = get(),
             getSavedProduct = get()
         )

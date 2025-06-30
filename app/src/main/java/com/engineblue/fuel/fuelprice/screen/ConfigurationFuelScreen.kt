@@ -27,12 +27,12 @@ import androidx.compose.ui.unit.dp
 import com.fuel.engineblue.R
 import com.engineblue.fuel.presentation.entity.FuelProductDisplayModel
 import com.engineblue.fuel.presentation.viewmodel.FuelViewModel
-import org.koin.androidx.compose.get
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ConfigurationFuelScreen(modifier: Modifier = Modifier, onProductSelected: () -> Unit) {
 
-    val viewModel: FuelViewModel = get()
+    val viewModel = koinViewModel<FuelViewModel>()
 
     val listOfFuels = viewModel.fuelProductList.collectAsState()
 
