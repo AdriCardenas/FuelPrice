@@ -9,4 +9,5 @@ interface StationsRepository {
         idCity: String,
         idProduct: String
     ): List<StationEntity>
+    suspend fun getStationsByCity(idCity: String): List<StationEntity>
 }

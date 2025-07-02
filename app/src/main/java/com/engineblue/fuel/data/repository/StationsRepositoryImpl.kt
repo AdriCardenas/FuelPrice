@@ -35,5 +35,15 @@ class StationsRepositoryImpl(
         return transformStationList(result.stations, logger)
     }
 
+    override suspend fun getStationsByCity(idCity: String): List<StationEntity> {
+        val result: StationWrapperResponse = safeApiCall(
+            call = { api.getCityStations(idCity) },
+            errorMessage = "Error getting stations with id city: $idCity"
+        )
+            ?: return listOf()
+
+        return transformStationList(result.stations, logger)
+    }
+
     override fun getRepositoryName(): String = "StationsRepository"
 }

@@ -1,6 +1,5 @@
 package com.engineblue.fuel.fuelprice.network
 
-import androidx.core.graphics.get
 import com.engineblue.fuel.data.datasource.FuelApi
 import com.engineblue.fuel.data.entity.Fuel
 import com.engineblue.fuel.data.entity.StationWrapperResponse
@@ -12,7 +11,7 @@ class ApiDataSource(private val httpClient: HttpClient) : FuelApi {
     override suspend fun getFuels(): Result<List<Fuel>> {
         return try {
             val response: List<Fuel> = httpClient.get("Listados/ProductosPetroliferos")
-                .body() // Deserialize the body to List<Headline>
+                .body()
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)
@@ -23,7 +22,18 @@ class ApiDataSource(private val httpClient: HttpClient) : FuelApi {
         return try {
             val response: StationWrapperResponse =
                 httpClient.get("EstacionesTerrestres/FiltroProducto/$id")
-                    .body() // Deserialize the body to List<Headline>
+                    .body()
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getCityStations(id: String): Result<StationWrapperResponse> {
+        return try {
+            val response: StationWrapperResponse =
+                httpClient.get("EstacionesTerrestres/FiltroMunicipio/$id")
+                    .body()
             Result.success(response)
         } catch (e: Exception) {
             Result.failure(e)

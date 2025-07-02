@@ -1,43 +1,28 @@
 package com.engineblue.fuel.fuelprice.activity
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.gestures.forEach
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.input.key.key
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.fuel.engineblue.R
 import com.engineblue.fuel.fuelprice.core.ui.AppTheme
 import com.engineblue.fuel.fuelprice.screen.ConfigurationFuelScreen
 import com.engineblue.fuel.fuelprice.screen.HomeScreen
 import com.engineblue.fuel.fuelprice.screen.OnBoardingScreen
-import com.engineblue.fuel.fuelprice.utils.toast
 import com.engineblue.fuel.presentation.viewmodel.ListStationsViewModel
+import com.engineblue.fuel.presentation.viewmodel.RoutingViewModel
+import com.fuel.engineblue.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.snackbar.Snackbar
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import androidx.core.net.toUri
-import com.engineblue.fuel.presentation.viewmodel.RoutingViewModel
 
 class HomeActivity : AppCompatActivity() {
 
@@ -83,6 +68,18 @@ class HomeActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    composable("home") {
+                        HomeScreen(
+                            viewModel = stationViewModel,
+                            navigateToMaps = ::navigateToMaps,
+                            getCurrentLocation = ::getCurrentLocation,
+                            onSettingClicked = {
+                                navController.navigate("configuration_fuel") {
+                                    popUpTo("home")
+                                }
+                            })
+                    }
+
                     composable("home") {
                         HomeScreen(
                             viewModel = stationViewModel,

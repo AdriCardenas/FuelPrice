@@ -163,7 +163,7 @@ class ListStationsViewModel(
             dateFormatted, item.cityId!!, product.id!!
         )
         response.forEach {
-            val prize = it.prize
+            val prize = it.priceSelected
             if (prize != null) {
                 Log.d("LOG1**", "nuevo item $prize")
                 val newItem = HistoricStation(dateFormatted, prize)

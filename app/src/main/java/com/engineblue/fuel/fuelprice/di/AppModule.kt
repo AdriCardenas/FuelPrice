@@ -8,6 +8,7 @@ import com.engineblue.fuel.data.repository.StationsRepositoryImpl
 import com.engineblue.fuel.domain.repository.FuelRepository
 import com.engineblue.fuel.domain.repository.SettingRepository
 import com.engineblue.fuel.domain.repository.StationsRepository
+import com.engineblue.fuel.domain.useCasesContract.GetCityStations
 import com.engineblue.fuel.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct
 import com.engineblue.fuel.domain.useCasesContract.GetRemoteProducts
 import com.engineblue.fuel.domain.useCasesContract.GetRemoteStations
@@ -19,6 +20,7 @@ import com.engineblue.fuel.domain.useCasesContract.preferences.SaveProductSelect
 import com.engineblue.fuel.fuelprice.network.ApiDataSource
 import com.engineblue.fuel.fuelprice.network.httpClient
 import com.engineblue.fuel.fuelprice.preferences.PreferenceManager
+import com.engineblue.fuel.presentation.useCases.GetCityStationsImpl
 import com.engineblue.fuel.presentation.useCases.GetRemoteHistoricByDateCityAndProductImpl
 import com.engineblue.fuel.presentation.useCases.GetRemoteProductsImpl
 import com.engineblue.fuel.presentation.useCases.GetRemoteStationsImpl
@@ -67,6 +69,13 @@ val mUseCaseModules = module {
 
     factory<GetRemoteHistoricByDateCityAndProduct> {
         GetRemoteHistoricByDateCityAndProductImpl(
+            repository = get(),
+            dispatcher = Dispatchers.IO
+        )
+    }
+
+    factory<GetCityStations> {
+        GetCityStationsImpl(
             repository = get(),
             dispatcher = Dispatchers.IO
         )

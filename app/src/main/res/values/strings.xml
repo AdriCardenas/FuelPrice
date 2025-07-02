@@ -43,4 +43,6 @@
     <string name="error">Ha ocurrido un error</string>
     <string name="no_data_available">No hay datos disponibles. Intentelo de nuevo</string>
     <string name="reload">Volver a intentar</string>
+    <string name="fuel_station_title">Precio actual</string>
+    <string name="back">Volver</string>
 </resources>

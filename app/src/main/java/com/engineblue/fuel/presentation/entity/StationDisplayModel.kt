@@ -3,8 +3,8 @@ package com.engineblue.fuel.presentation.entity
 import android.location.Location
 
 sealed class StationItemFuelDisplayModel {
-    abstract fun areItemsTheSame(other: com.engineblue.fuel.presentation.entity.StationItemFuelDisplayModel): Boolean
-    abstract fun areContentsTheSame(other: com.engineblue.fuel.presentation.entity.StationItemFuelDisplayModel): Boolean
+    abstract fun areItemsTheSame(other: StationItemFuelDisplayModel): Boolean
+    abstract fun areContentsTheSame(other: StationItemFuelDisplayModel): Boolean
 }
 
 data class StationDisplayModel(
@@ -23,10 +23,10 @@ data class StationDisplayModel(
     val city: String? = null,
     val cityId: String? = null,
     val province: String? = null,
-    var historic: List<com.engineblue.fuel.presentation.entity.HistoricStation> = listOf(),
+    var historic: List<HistoricStation> = listOf(),
 
-    var priceStatus: com.engineblue.fuel.presentation.entity.StationDisplayModel.PriceStatus = com.engineblue.fuel.presentation.entity.StationDisplayModel.PriceStatus.UNASSIGNED
-) : com.engineblue.fuel.presentation.entity.StationItemFuelDisplayModel() {
+    var priceStatus: PriceStatus = PriceStatus.UNASSIGNED
+) : StationItemFuelDisplayModel() {
 
     enum class PriceStatus {
         CHEAP,
@@ -35,11 +35,11 @@ data class StationDisplayModel(
         UNASSIGNED,
     }
 
-    override fun areItemsTheSame(other: com.engineblue.fuel.presentation.entity.StationItemFuelDisplayModel) =
-        other is com.engineblue.fuel.presentation.entity.StationDisplayModel && id == other.id
+    override fun areItemsTheSame(other: StationItemFuelDisplayModel) =
+        other is StationDisplayModel && id == other.id
 
-    override fun areContentsTheSame(other: com.engineblue.fuel.presentation.entity.StationItemFuelDisplayModel) =
-        other is com.engineblue.fuel.presentation.entity.StationDisplayModel && other == this
+    override fun areContentsTheSame(other: StationItemFuelDisplayModel) =
+        other is StationDisplayModel && other == this
                 && other.price != this.price
                 && other.priceStatus == this.priceStatus
                 && other.address == this.address

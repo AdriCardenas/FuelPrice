@@ -20,4 +20,7 @@ interface FuelApi {
         idMunicipio: String,
         idProducto: String,
     ): Result<StationWrapperResponse>
+
+    @WorkerThread
+    suspend fun getCityStations(id: String): Result<StationWrapperResponse>
 }

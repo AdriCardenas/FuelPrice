@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 class GetRemoteHistoricByDateCityAndProductImpl(
     private val repository: StationsRepository,
     private val dispatcher: CoroutineDispatcher
-) : com.engineblue.fuel.domain.useCasesContract.GetRemoteHistoricByDateCityAndProduct {
+) : GetRemoteHistoricByDateCityAndProduct {
     override suspend fun invoke(
         date: String,
         idCity: String,

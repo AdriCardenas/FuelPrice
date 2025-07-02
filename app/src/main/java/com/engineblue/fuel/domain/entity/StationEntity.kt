@@ -6,7 +6,13 @@ data class StationEntity(
     val latitude: String? = null,
     val longitude: String? = null,
 
-    val prize: String? = null,
+    val priceSelected: String? = null,
+
+    val gasPrice95: String? = null,
+    val gasPrice98: String? = null,
+    val dieselPrice: String? = null,
+    val dieselPremiumPrice: String? = null,
+    val dieselBPrice: String? = null,
 
     val name: String? = null,
     val schedule: String? = null,

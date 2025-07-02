@@ -2,7 +2,6 @@ package com.engineblue.fuel.presentation.mapper
 
 import android.location.Location
 import com.engineblue.fuel.domain.entity.StationEntity
-import com.engineblue.fuel.presentation.entity.StationDisplayModel
 
 fun transformStationList(
     results: List<StationEntity>?,
@@ -25,7 +24,7 @@ fun transformStationList(
             it.id,
             location,
             distance,
-            it.prize,
+            it.priceSelected,
             it.name,
             it.schedule,
             it.zipCode,

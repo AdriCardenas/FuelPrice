@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 class GetRemoteProductsImpl(
     private val repository: FuelRepository,
     private val dispatcher: CoroutineDispatcher
-) : com.engineblue.fuel.domain.useCasesContract.GetRemoteProducts {
+) : GetRemoteProducts {
 
     override suspend fun getListRemoteFuels(): List<FuelEntity> =
         withContext(dispatcher) {
