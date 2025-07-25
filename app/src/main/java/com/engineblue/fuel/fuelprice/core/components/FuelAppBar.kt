@@ -2,7 +2,11 @@ package com.engineblue.fuel.fuelprice.core.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -16,7 +20,14 @@ import com.fuel.engineblue.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FuelTopAppBar(title: String, subtitle: String, onSettingClick: () -> Unit) {
+fun FuelTopAppBar(
+    title: String,
+    subtitle: String = "",
+    onSettingClick: () -> Unit = {},
+    onBackPressed: () -> Unit = {},
+    hasBack: Boolean = false,
+    hasSetting: Boolean = false,
+) {
     TopAppBar(
         title = {
             Column {
@@ -35,21 +46,24 @@ fun FuelTopAppBar(title: String, subtitle: String, onSettingClick: () -> Unit) {
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
         actions = {
-            IconButton(onClick = onSettingClick) {
-                Icon(
-                    imageVector = Icons.Filled.Settings,
-                    contentDescription = stringResource(id = R.string.setting),
-                )
-            }
+            if (hasSetting)
+                IconButton(onClick = onSettingClick) {
+                    Icon(
+                        imageVector = Icons.Outlined.Settings,
+                        contentDescription = stringResource(id = R.string.setting),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+        },
+        navigationIcon = {
+            if (hasBack)
+                IconButton(onClick = onBackPressed) {
+                    Icon(
+                        Icons.AutoMirrored.Outlined.ArrowBack,
+                        contentDescription = stringResource(R.string.back),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
         }
-//        navigationIcon = {
-//            IconButton(onClick = onClick) {
-//                Icon(
-//                    imageVector = Icons.Filled.ArrowBack,
-//                    contentDescription = "Go back",
-//                    tint = MaterialTheme.colorScheme.primary
-//                )
-//            }
-//        }
     )
 }

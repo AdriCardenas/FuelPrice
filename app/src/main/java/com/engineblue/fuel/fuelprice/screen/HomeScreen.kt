@@ -29,7 +29,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,13 +45,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.engineblue.fuel.fuelprice.core.components.FuelTopAppBar
 import com.engineblue.fuel.fuelprice.core.ui.colorCheap
 import com.engineblue.fuel.fuelprice.core.ui.colorExpensive
 import com.engineblue.fuel.fuelprice.core.ui.colorRegular
 import com.engineblue.fuel.presentation.entity.ListStationsUiState
 import com.engineblue.fuel.presentation.entity.StationDisplayModel
-import com.engineblue.fuel.presentation.viewmodel.ListStationsViewModel
 import com.fuel.engineblue.R
 import com.himanshoe.charty.line.model.LineData
 import java.text.DecimalFormat
@@ -60,13 +59,12 @@ import java.text.DecimalFormat
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    viewModel: ListStationsViewModel,
+    uiState: ListStationsUiState,
     onSettingClicked: () -> Unit,
-    navigateToMaps: (location: Location, name: String) -> Unit,
-    getCurrentLocation: () -> Unit
+    onStationClicked: (StationDisplayModel) -> Unit,
+    getCurrentLocation: () -> Unit,
+    reloadStations: () -> Unit,
 ) {
-    val uiState = viewModel.uiState.collectAsState().value
-
     val context = LocalContext.current
     var hasFineLocationPermission by rememberSaveable {
         mutableStateOf(
@@ -101,8 +99,10 @@ fun HomeScreen(
         topBar = {
             FuelTopAppBar(
                 stringResource(R.string.fuel_price_title),
-                uiState.selectedFuel.name ?: ""
-            ) { onSettingClicked() }
+                uiState.selectedFuel.name ?: "",
+                onSettingClick = onSettingClicked,
+                hasSetting = true
+            )
         },
         content = { padding ->
             if (uiState is ListStationsUiState.Loading) {
@@ -136,14 +136,16 @@ fun HomeScreen(
                             modifier = Modifier.padding(top = 16.dp)
                         )
                         OutlinedButton(
-                            onClick = { viewModel.loadStations() },
+                            onClick = { reloadStations() },
                             modifier = Modifier.padding(top = 16.dp)
                         ) {
                             Text(stringResource(R.string.reload))
                         }
                     }
                 }
-            } else if (uiState is ListStationsUiState.Success) {
+            }
+
+            else if (uiState is ListStationsUiState.Success) {
                 LazyColumn(
                     modifier.padding(padding),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -151,9 +153,10 @@ fun HomeScreen(
                 ) {
                     items(uiState.items, itemContent = {
                         StationItem(it) { item ->
-                            viewModel.loadHistoric(item)
-                            if (item.location != null && item.name != null)
-                                navigateToMaps(item.location, item.name)
+//                            viewModel.loadHistoric(item)
+                            onStationClicked(it)
+//                            if (item.location != null && item.name != null)
+//                                navigateToMaps(item.location, item.name)
                         }
                     })
                 }
@@ -265,7 +268,7 @@ fun StationItem(station: StationDisplayModel, onClickItem: (StationDisplayModel)
     }
 }
 
-private fun formatDistance(distance: Float?): String {
+fun formatDistance(distance: Float?): String {
     if (distance == null) return "?"
 
     return try {

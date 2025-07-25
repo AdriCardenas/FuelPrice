@@ -41,7 +41,7 @@ class ListStationsViewModel(
     fun loadStations() {
         launch {
             val productSelected = getSelectedFuel()
-            var items = emptyList<StationDisplayModel>()
+            var items: List<StationDisplayModel>
 
             val currentPosition = Location("Current Position")
             val state = uiState.value
@@ -62,11 +62,14 @@ class ListStationsViewModel(
                     } else {
                         setPricesColors(transformStationList(remoteStations, null))
                     }
+                    _uiState.value = ListStationsUiState.Success(
+                        items = items, selectedFuel = productSelected
+                    )
+                }else{
+                    _uiState.value = ListStationsUiState.Error(selectedFuel = productSelected
+                    )
                 }
 
-                _uiState.value = ListStationsUiState.Success(
-                    items = items, selectedFuel = productSelected
-                )
             } else {
                 if (_uiState.value !is ListStationsUiState.Success)
                     _uiState.value = ListStationsUiState.Error(selectedFuel = productSelected)

@@ -28,6 +28,7 @@ import com.engineblue.fuel.presentation.useCases.GetSavedProductImpl
 import com.engineblue.fuel.presentation.useCases.SaveLocationSelectedImpl
 import com.engineblue.fuel.presentation.useCases.SaveProductSelectedImpl
 import com.engineblue.fuel.presentation.useCases.preferences.SaveBooleanImpl
+import com.engineblue.fuel.presentation.viewmodel.CityStationViewModel
 import com.engineblue.fuel.presentation.viewmodel.FuelViewModel
 import com.engineblue.fuel.presentation.viewmodel.ListStationsViewModel
 import com.engineblue.fuel.presentation.viewmodel.OnBoardingViewModel
@@ -36,6 +37,7 @@ import io.ktor.client.HttpClient
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import java.util.logging.Logger
 
@@ -117,6 +119,8 @@ val mNetworkModules = module {
 }
 
 val mViewModels = module {
+    viewModelOf(::CityStationViewModel)
+
     viewModel {
         FuelViewModel(getRemoteProducts = get(), saveProductSelected = get())
     }

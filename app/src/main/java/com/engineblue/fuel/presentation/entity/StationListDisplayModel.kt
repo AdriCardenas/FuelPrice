@@ -15,6 +15,12 @@ data class StationDisplayModel(
 
     val price: String? = null,
 
+    val gasPrice95: String? = null,
+    val gasPrice98: String? = null,
+    val dieselPrice: String? = null,
+    val dieselPremiumPrice: String? = null,
+    val dieselBPrice: String? = null,
+
     val name: String? = null,
     val schedule: String? = null,
 
@@ -25,7 +31,7 @@ data class StationDisplayModel(
     val province: String? = null,
     var historic: List<HistoricStation> = listOf(),
 
-    var priceStatus: PriceStatus = PriceStatus.UNASSIGNED
+    var priceStatus: PriceStatus = PriceStatus.UNASSIGNED,
 ) : StationItemFuelDisplayModel() {
 
     enum class PriceStatus {

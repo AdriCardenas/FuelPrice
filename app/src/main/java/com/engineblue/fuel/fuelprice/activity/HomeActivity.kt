@@ -8,13 +8,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.engineblue.fuel.fuelprice.core.ui.AppTheme
 import com.engineblue.fuel.fuelprice.screen.ConfigurationFuelScreen
+import com.engineblue.fuel.fuelprice.screen.FuelStationDetailScreen
 import com.engineblue.fuel.fuelprice.screen.HomeScreen
 import com.engineblue.fuel.fuelprice.screen.OnBoardingScreen
 import com.engineblue.fuel.presentation.viewmodel.ListStationsViewModel
@@ -40,8 +44,7 @@ class HomeActivity : AppCompatActivity() {
 
         setContent {
             val navController = rememberNavController()
-            val startDestination =
-                getStartDestination()
+            val startDestination = getStartDestination()
 
             AppTheme {
 
@@ -68,28 +71,44 @@ class HomeActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    composable("home") {
-                        HomeScreen(
-                            viewModel = stationViewModel,
-                            navigateToMaps = ::navigateToMaps,
-                            getCurrentLocation = ::getCurrentLocation,
-                            onSettingClicked = {
-                                navController.navigate("configuration_fuel") {
-                                    popUpTo("home")
-                                }
-                            })
-                    }
 
                     composable("home") {
                         HomeScreen(
-                            viewModel = stationViewModel,
-                            navigateToMaps = ::navigateToMaps,
+                            uiState = stationViewModel.uiState.collectAsState().value,
                             getCurrentLocation = ::getCurrentLocation,
+                            onStationClicked = {
+                                navController.navigate("station_detail/${it.cityId}/${it.id}/${it.location?.latitude?.toFloat() ?: 0.0f}/${it.location?.longitude?.toFloat() ?: 0.0f}")
+                            },
                             onSettingClicked = {
                                 navController.navigate("configuration_fuel") {
                                     popUpTo("home")
                                 }
-                            })
+                            },
+                            reloadStations = { stationViewModel.loadStations() },
+                        )
+                    }
+
+                    composable(
+                        "station_detail/{city}/{station}/{latitude}/{longitude}",
+                        arguments = listOf(
+                            navArgument("latitude") { type = NavType.FloatType },
+                            navArgument("longitude") { type = NavType.FloatType },
+                            navArgument("city") { type = NavType.StringType },
+                            navArgument("station") { type = NavType.StringType },
+                        )
+                    ) { backStackEntry ->
+                        val station = backStackEntry.arguments?.getString("station")
+                        val city = backStackEntry.arguments?.getString("city")
+                        val latitude = backStackEntry.arguments?.getFloat("latitude")
+                        val longitude = backStackEntry.arguments?.getFloat("longitude")
+
+                        FuelStationDetailScreen(
+                            station,
+                            city,
+                            latitude?.toDouble() ?: 0.0,
+                            longitude?.toDouble() ?: 0.0,
+                            navigateToMaps = ::navigateToMaps,
+                            onBack = { navController.popBackStack() })
                     }
                 }
             }
@@ -103,7 +122,7 @@ class HomeActivity : AppCompatActivity() {
         stationViewModel.checkLoadStations()
     }
 
-    private fun navigateToMaps(location: Location, name:String) {
+    private fun navigateToMaps(location: Location, name: String) {
         val latitude = location.latitude
         val longitude = location.longitude
 
@@ -113,9 +132,10 @@ class HomeActivity : AppCompatActivity() {
 
         if (mapIntent.resolveActivity(packageManager) != null) {
             startActivity(mapIntent)
-        }else {
+        } else {
             // Google Maps app is not installed, handle this (e.g., show a Toast or open in browser)
-            val webUri = "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude".toUri()
+            val webUri =
+                "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude".toUri()
             val webIntent = Intent(Intent.ACTION_VIEW, webUri)
             if (webIntent.resolveActivity(packageManager) != null) {
                 startActivity(webIntent)
@@ -133,7 +153,7 @@ class HomeActivity : AppCompatActivity() {
         }.addOnCompleteListener {
             if (it.isSuccessful) {
                 this.location = it.result
-                stationViewModel.setLocation(location?.latitude?:0.0, location?.longitude?: 0.0)
+                stationViewModel.setLocation(location?.latitude ?: 0.0, location?.longitude ?: 0.0)
                 stationViewModel.loadStations()
             } else {
                 stationViewModel.loadStations()
