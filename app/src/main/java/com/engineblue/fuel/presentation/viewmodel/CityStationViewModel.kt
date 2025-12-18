@@ -22,7 +22,7 @@ class CityStationViewModel(
             if (stationCity.value != CityStationUiState.Loading) {
                 _stationCity.value = CityStationUiState.Loading
 
-                val currentPosition = Location("Current Position")
+                val currentPosition = Location("my_location")
 
                 val stations = getCityStations(idCity)
 

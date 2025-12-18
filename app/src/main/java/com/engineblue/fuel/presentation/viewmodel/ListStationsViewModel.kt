@@ -43,17 +43,17 @@ class ListStationsViewModel(
             val productSelected = getSelectedFuel()
             var items: List<StationDisplayModel>
 
-            val currentPosition = Location("Current Position")
+            val currentPosition = Location("my_location")
             val state = uiState.value
-            if (productSelected.id != null && ((state is ListStationsUiState.Success && (productSelected.id != state.selectedFuel.id || currentPosition.latitude != latitude || currentPosition.longitude != longitude)) || state is ListStationsUiState.Error || state is ListStationsUiState.Idle)) {
+            if (productSelected.id != null && ((state is ListStationsUiState.Success && (productSelected.id != state.selectedFuel.id)) || state is ListStationsUiState.Error || state is ListStationsUiState.Idle)) {
                 _uiState.value = ListStationsUiState.Loading(selectedFuel = productSelected)
                 val remoteStations = getRemoteStations(productSelected.id)
 
                 if (remoteStations.isNotEmpty()) {
                     items = if (latitude != null && longitude != null) {
 
-                        currentPosition.latitude = latitude!!
-                        currentPosition.longitude = longitude!!
+                        currentPosition.latitude = latitude ?: 0.0
+                        currentPosition.longitude = longitude ?: 0.0
 
                         val list = transformStationList(remoteStations, currentPosition)
                         val orderedList = list.sortedBy { it.distance }
@@ -65,8 +65,9 @@ class ListStationsViewModel(
                     _uiState.value = ListStationsUiState.Success(
                         items = items, selectedFuel = productSelected
                     )
-                }else{
-                    _uiState.value = ListStationsUiState.Error(selectedFuel = productSelected
+                } else {
+                    _uiState.value = ListStationsUiState.Error(
+                        selectedFuel = productSelected
                     )
                 }
 
