@@ -4,6 +4,7 @@ import android.location.Location
 import androidx.lifecycle.ViewModel
 import com.engineblue.fuel.domain.useCasesContract.GetCityStations
 import com.engineblue.fuel.presentation.entity.CityStationUiState
+import com.engineblue.fuel.presentation.intent.CityStationEvent
 import com.engineblue.fuel.presentation.mapper.transformStationList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,36 +12,42 @@ import kotlinx.coroutines.launch
 
 class CityStationViewModel(
     private val getCityStations: GetCityStations,
-) : ViewModel() {
+) : MVIBaseViewModel<CityStationUiState, CityStationEvent>() {
 
-    private val _stationCity: MutableStateFlow<CityStationUiState> =
-        MutableStateFlow(CityStationUiState.Idle)
-    val stationCity: StateFlow<CityStationUiState> = _stationCity
+    private fun loadStation(idCity: String, stationId: String, latitude: Double, longitude: Double) {
+        execute {
+            getCityStations(idCity).collect { stations ->
+                updateUi {
+                    if (!stations.isEmpty()) {
+                        val nearStations = transformStationList(stations, Location("my_location"))
+                        val station = nearStations.find { it.id == stationId }
 
-    fun loadStation(idCity: String, stationId: String, latitude: Double, longitude: Double) {
-        viewModelScope().launch {
-            if (stationCity.value != CityStationUiState.Loading) {
-                _stationCity.value = CityStationUiState.Loading
-
-                val currentPosition = Location("my_location")
-
-                val stations = getCityStations(idCity)
-
-                if (!stations.isEmpty()) {
-                    val nearStations = transformStationList(stations, currentPosition)
-                    val station = nearStations.find { it.id == stationId }
-
-                    if (station != null) {
-                        _stationCity.value = CityStationUiState.Success(
-                            nearStations.filter { it.id != stationId },
-                            station
-                        )
+                        if (station != null) {
+                            CityStationUiState.Success(
+                                nearStations = nearStations,
+                                selectedStation = station
+                            )
+                        } else {
+                            CityStationUiState.Error
+                        }
                     } else {
-                        _stationCity.value = CityStationUiState.Error
+                        CityStationUiState.Error
                     }
-                } else {
-                    _stationCity.value = CityStationUiState.Error
                 }
+            }
+        }
+    }
+
+    override fun initState(): CityStationUiState = CityStationUiState.Idle
+
+    override fun intentHandler() {
+        executeIntent { event ->
+            when (event) {
+                is CityStationEvent.GetCityStations -> {
+                    loadStation(event.idCity, event.stationId, event.latitude, event.longitude)
+                }
+
+                else -> updateUi { it }
             }
         }
     }

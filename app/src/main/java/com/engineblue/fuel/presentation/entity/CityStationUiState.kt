@@ -1,6 +1,8 @@
 package com.engineblue.fuel.presentation.entity
 
-sealed class CityStationUiState {
+import com.engineblue.fuel.presentation.viewmodel.State
+
+sealed class CityStationUiState : State{
     object Idle : CityStationUiState()
     object Loading : CityStationUiState()
     data class Success(

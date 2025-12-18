@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.engineblue.fuel.fuelprice.core.components.FuelTopAppBar
 import com.engineblue.fuel.presentation.entity.CityStationUiState
+import com.engineblue.fuel.presentation.intent.CityStationEvent
 import com.engineblue.fuel.presentation.viewmodel.CityStationViewModel
 import com.fuel.engineblue.R
 import org.koin.androidx.compose.koinViewModel
@@ -47,7 +48,9 @@ fun FuelStationDetailScreen(
 ) {
     val viewModel: CityStationViewModel = koinViewModel()
 
-    viewModel.loadStation(city!!, station!!, latitude ?: 0.0, longitude ?: 0.0)
+    viewModel.eventHandler(
+        CityStationEvent.GetCityStations(city!!, station!!, latitude ?: 0.0, longitude ?: 0.0)
+    )
 
 //    fuelStation: StationDisplayModel
     Scaffold(
@@ -61,7 +64,7 @@ fun FuelStationDetailScreen(
     ) { paddingValues ->
         CityStationContent(
             paddingValues,
-            viewModel.stationCity.collectAsState().value,
+            viewModel.uiState.collectAsState().value,
             navigateToMaps
         )
     }
