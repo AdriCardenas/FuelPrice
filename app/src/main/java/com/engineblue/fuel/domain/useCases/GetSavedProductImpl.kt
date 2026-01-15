@@ -1,4 +1,4 @@
-package com.engineblue.fuel.presentation.useCases
+package com.engineblue.fuel.domain.useCases
 
 import com.engineblue.fuel.domain.entity.FuelEntity
 import com.engineblue.fuel.domain.repository.FuelRepository

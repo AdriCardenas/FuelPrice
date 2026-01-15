@@ -20,14 +20,15 @@ import com.engineblue.fuel.domain.useCasesContract.preferences.SaveProductSelect
 import com.engineblue.fuel.fuelprice.network.ApiDataSource
 import com.engineblue.fuel.fuelprice.network.httpClient
 import com.engineblue.fuel.fuelprice.preferences.PreferenceManager
-import com.engineblue.fuel.presentation.useCases.GetCityStationsImpl
-import com.engineblue.fuel.presentation.useCases.GetRemoteHistoricByDateCityAndProductImpl
-import com.engineblue.fuel.presentation.useCases.GetRemoteProductsImpl
-import com.engineblue.fuel.presentation.useCases.GetRemoteStationsImpl
-import com.engineblue.fuel.presentation.useCases.GetSavedProductImpl
-import com.engineblue.fuel.presentation.useCases.SaveLocationSelectedImpl
-import com.engineblue.fuel.presentation.useCases.SaveProductSelectedImpl
-import com.engineblue.fuel.presentation.useCases.preferences.SaveBooleanImpl
+import com.engineblue.fuel.domain.useCases.GetCityStationsImpl
+import com.engineblue.fuel.domain.useCases.GetRemoteHistoricByDateCityAndProductImpl
+import com.engineblue.fuel.domain.useCases.GetRemoteProductsImpl
+import com.engineblue.fuel.domain.useCases.GetRemoteStationsImpl
+import com.engineblue.fuel.domain.useCases.GetSavedProductImpl
+import com.engineblue.fuel.domain.useCases.SaveLocationSelectedImpl
+import com.engineblue.fuel.domain.useCases.SaveProductSelectedImpl
+import com.engineblue.fuel.domain.useCases.preferences.GetSavedBooleanImpl
+import com.engineblue.fuel.domain.useCases.preferences.SaveBooleanImpl
 import com.engineblue.fuel.presentation.viewmodel.CityStationViewModel
 import com.engineblue.fuel.presentation.viewmodel.FuelViewModel
 import com.engineblue.fuel.presentation.viewmodel.ListStationsViewModel
@@ -107,7 +108,7 @@ val mUseCaseModules = module {
     }
 
     factory<GetSavedBoolean> {
-        com.engineblue.fuel.presentation.useCases.preferences.GetSavedBooleanImpl(
+        GetSavedBooleanImpl(
             settingRepository = get()
         )
     }

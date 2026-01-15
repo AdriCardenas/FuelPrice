@@ -1,4 +1,4 @@
-package com.engineblue.fuel.presentation.useCases.preferences
+package com.engineblue.fuel.domain.useCases.preferences
 
 import com.engineblue.fuel.domain.repository.SettingRepository
 import com.engineblue.fuel.domain.useCasesContract.preferences.GetSavedBoolean
