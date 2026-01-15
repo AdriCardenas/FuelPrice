@@ -1,3 +1,4 @@
+### Deprecated
 # Proyecto de Prueba de Conceptos de Android
 
 Este repositorio es un proyecto personal diseñado para probar y demostrar diversos conceptos y arquitecturas del desarrollo de aplicaciones para Android.
